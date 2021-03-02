@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'login_style.css' %}">
+    <title>TripBuddy: Log In or Register!</title>
+</head>
+<body>
+<div id="wrapper">
+    <header>
+        <h1>Welcome!  Let's travel!</h1>
+        
+        {% if messages %}
+        <ul class="error_list">
+            {% for message in messages %}
+            <li class="{{message.tags}}_msg">{{message}}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+    </header>
+    
+    <main>
+
+        <form method="POST" action="/login/users/register">
+        {% csrf_token %}
+            <h2>Register:</h2>
+
+            <div class="row">
+                <label for="first_name">First name</label>
+                <input type="text" class="fix_width" name="first_name" id="first_name">
+            </div>
+
+            <div class="row">
+                <label for="last_name">Last name</label>
+                <input type="text" class="fix_width" name="last_name" id="last_name">
+            </div>
+
+            <div class="row">
+                <label for="email">Email address</label>
+                <input type="email" class="fix_width" name="email" id="email">
+            </div>
+
+            <div class="row">
+                <label for="password">Password</label>
+                <input type="password" class="fix_width" name="password" id="password">
+            </div>
+
+            <div class="row">
+                <label for="confirm_pw">Confirm password</label>
+                <input type="password" class="fix_width" name="confirm_pw" id="confirm_pw">
+            </div>
+
+            <div class="centerflex">
+                <input type="submit" class="coolbutton" value="Register">
+            </div>
+        </form>
+
+
+
+        <form method="POST" action="/login/users/login">
+            {% csrf_token %}
+                <h2>Log in:</h2>
+    
+                <div class="row">
+                    <label for="email">Email address</label>
+                    <input type="email" class="fix_width" name="email">
+                </div>
+    
+                <div class="row">
+                    <label for="password">Password</label>
+                    <input type="password" class="fix_width" name="password">
+                </div>
+        
+                <div class="centerflex">
+                    <input type="submit" class="coolbutton" value="Log in">
+                </div>
+            </form>
+
+    </main>
+</div>
+</body>
+</html>

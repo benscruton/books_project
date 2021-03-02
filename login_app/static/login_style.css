@@ -1,0 +1,93 @@
+*{
+    margin: 0;
+    padding: 0;
+    vertical-align: top;
+    box-sizing: border-box;
+}
+
+#wrapper{
+    background-color: powderblue;
+    max-width: 90%;
+    min-width: 500px;
+    padding: 10px;
+    margin: 0 auto;
+}
+
+header{
+    display:flex;
+    justify-content: center;
+    flex-wrap: wrap
+}
+
+    header h1{
+        width: 100%;
+        text-align: center;
+    }
+
+.error_list{
+    padding-bottom: 15px;
+}
+
+.error_msg{
+    color: #b00;
+    font-weight: bold;
+}
+
+.success_msg{
+    color: forestgreen;
+    font-weight: bold;
+}
+
+main{
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-evenly;
+    flex-wrap: wrap;
+}
+
+h2{
+    text-align: center;
+    padding: 5px 0 15px;
+}
+
+form{
+    display: inline-block;
+    width: 450px;
+    padding: 0 25px;
+    margin-bottom: 25px;
+}
+
+    .row{
+        display: flex;
+        justify-content: flex-end;
+        padding: 5px;
+    }
+
+    .centerflex{
+        display: flex;
+        justify-content: center;
+        padding: 5px;
+    }
+
+    .fix_width{
+        width: 225px;
+        margin-left: 25px;
+    }
+
+    .coolbutton{
+        padding: 2px 5px;
+        border-radius: 5px;
+        border-top: 1px solid #bbb;
+        border-right: 2px solid #777;
+        border-bottom: 2px solid #444;
+        border-left: 1px solid #999;
+    }
+
+
+
+/* -------- FOR SUCCESS PAGE ------- */
+
+.rightflex{
+    display: flex;
+    justify-content: flex-end;
+}
