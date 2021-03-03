@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+<div id="wrapper">
+    <header>
+        <h1>{{user.first_name}} {{user.last_name}} Home</h1>
+        <ul id="navbar">
+            <li>Books Dashboard</li>
+            <li>Shelves</li>
+            <li>Profile</li>
+            <li>Wall</li>
+            <li>Friends</li>
+            <li><a href="/login/users/logout">Log out</a></li>
+        </ul>
+    </header>
+
+    <aside id="shelves">
+        <h3>Shelves:</h3>
+        <ul id="shelves">
+        {% for shelf in user.shelves.all %}
+            <li><a href="/shelves/{{shelf.id}}">{{shelf.name}}</a></li>
+        {% endfor %}
+
+
+
+
+    </aside>
+
+</div>
+</body>
+</html>
