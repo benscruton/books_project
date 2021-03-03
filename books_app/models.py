@@ -9,6 +9,7 @@ class Book(models.Model):
     description = models.TextField()
     author_firstname = models.CharField(max_length = 255)
     author_lastname = models.CharField(max_length = 255)
+    ISBN = models.CharField(max_length = 255, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now = True)
 

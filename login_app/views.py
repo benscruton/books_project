@@ -82,6 +82,10 @@ def login(request):
 
 
 def logout(request):
+    if "user_id" not in request.session:
+        messages.error(request, "You are not logged in!")
+        return redirect("/login")
+
     del request.session["user_id"]
     del request.session["first_name"]
     del request.session["last_name"]
