@@ -29,6 +29,10 @@ def register_new_user(request):
         hashed_pw = bcrypt.hashpw(request.POST["password"].encode(), bcrypt.gensalt()).decode()
         )
 
+    if this_user.username == "":
+        this_user.username = this_user.email
+        this_user.save()
+
     Shelf.objects.create(
         name = "Reading",
         owner = this_user

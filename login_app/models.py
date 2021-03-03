@@ -8,8 +8,7 @@ class UserManager(models.Manager):
         EMAIL_REGEX = re.compile(r'^[a-zA-Z0-9.+_-]+@[a-zA-Z0-9._-]+\.[a-zA-Z]+$')
 
         errors = {}
-        users_with_email = User.objects.filter(email = post_data["email"])
-        users_with_username = User.objects.filter(username = post_data["username"])
+        
 
         if len(post_data["first_name"]) < 2:
             errors["first_name"] = "First name must have at least two characters."
@@ -17,11 +16,11 @@ class UserManager(models.Manager):
             errors["last_name"] = "Last name must have at least two characters."
         if not EMAIL_REGEX.match(post_data["email"]):
             errors["email"] = "You must use a valid email address to register."
-        if len(users_with_email) > 0:
+        if len(User.objects.filter(email = post_data["email"])) > 0:
             errors["email"] = "There is already a user registered with this email address."
-        if len(post_data["username"]) < 1:
-            errors["username"] = "Username must be at least one character long."
-        if len(users_with_username) > 0:
+        # if len(post_data["username"]) < 1:
+        #     errors["username"] = "Username must be at least one character long."
+        if len(User.objects.filter(username = post_data["username"])) > 0:
             errors["username"] = "There is already a user registered with this username."
         if len(post_data["password"]) < 8:
             errors["password"] = "Your password must be at least 8 characters long."

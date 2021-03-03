@@ -18,11 +18,15 @@
 <body>
 <div id="wrapper">
     <header>
-        <h1>{{user.first_name}} {{user.last_name}} Home</h1>
+        {% if user.id == request.session.user_id %}
+            <h1>Your Home</h1>
+        {% else %}
+            <h1>{{user.first_name}} {{user.last_name}} Home</h1>
+        {% endif %}
         <ul id="navbar">
             <li>Books Dashboard</li>
             <li>Shelves</li>
-            <li>Profile</li>
+            <li><a href="/users/{{request.session.user_id}}">Profile</a></li>
             <li>Wall</li>
             <li>Friends</li>
             <li><a href="/login/users/logout">Log out</a></li>
@@ -56,7 +60,7 @@
         
         {% for post in user.posts_on_wall.all %}
         <div class="border">
-            <h4>{{post.poster.first_name}} {{post.poster.last_name}}, at {{post.created_at}}</h4>
+            <h4><a href="/users/{{post.poster.id}}">{{post.poster.first_name}} {{post.poster.last_name}}</a>, at {{post.created_at}}</h4>
             <p class="wallpost">{{post.contents}}</p>
             
             {% if post.poster.id == request.session.user_id %}
@@ -66,7 +70,7 @@
 
             {% for comment in post.comments.all %}
             <div class="border">
-                <h4>{{comment.commenter.first_name}} {{comment.commenter.last_name}}, at {{comment.created_at}}</h4>
+                <h4><a href="/users/{{comment.commenter.id}}">{{comment.commenter.first_name}} {{comment.commenter.last_name}}</a>, at {{comment.created_at}}</h4>
                 <p class="comment">{{comment.contents}}</p>
 
                 {% if comment.commenter.id == request.session.user_id %}
@@ -89,7 +93,7 @@
         <div class="border">
             <form method="POST" action="/users/{{user.id}}/add_wallpost">
             {% csrf_token %}
-                <p><label for="add_post">Write on {{user.first_name}}'s wall:</label></p>
+                <p><label for="add_post">Write on {% if user.id == request.session.user_id %}your{% else %}{{user.first_name}}'s{% endif%} wall:</label></p>
                 <textarea class="wallpost" rows=6 cols=40 name="add_post" id="add_post"></textarea>
                 <input type="submit" value="Post to wall">
             </form>
