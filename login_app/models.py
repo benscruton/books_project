@@ -8,7 +8,7 @@ class UserManager(models.Manager):
         EMAIL_REGEX = re.compile(r'^[a-zA-Z0-9.+_-]+@[a-zA-Z0-9._-]+\.[a-zA-Z]+$')
 
         errors = {}
-        users_with_email = User.objects.filter(email = post_data["email"])
+        
 
         if len(post_data["first_name"]) < 2:
             errors["first_name"] = "First name must have at least two characters."
@@ -16,8 +16,12 @@ class UserManager(models.Manager):
             errors["last_name"] = "Last name must have at least two characters."
         if not EMAIL_REGEX.match(post_data["email"]):
             errors["email"] = "You must use a valid email address to register."
-        if len(users_with_email) > 0:
+        if len(User.objects.filter(email = post_data["email"])) > 0:
             errors["email"] = "There is already a user registered with this email address."
+        # if len(post_data["username"]) < 1:
+        #     errors["username"] = "Username must be at least one character long."
+        if len(User.objects.filter(username = post_data["username"])) > 0:
+            errors["username"] = "There is already a user registered with this username."
         if len(post_data["password"]) < 8:
             errors["password"] = "Your password must be at least 8 characters long."
         if not (post_data["password"] == post_data["confirm_pw"]):
@@ -32,6 +36,7 @@ class User(models.Model):
     email = models.CharField(max_length = 255)
     username = models.CharField(max_length = 255)
     hashed_pw = models.CharField(max_length = 255)
+    friends = models.ManyToManyField("User")
     created_at = models.DateTimeField(auto_now_add = True)
     updated_at = models.DateTimeField(auto_now = True)
     objects = UserManager()

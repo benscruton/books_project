@@ -9,6 +9,7 @@ class Book(models.Model):
     description = models.TextField()
     author_firstname = models.CharField(max_length = 255)
     author_lastname = models.CharField(max_length = 255)
+    ISBN = models.CharField(max_length = 255, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now = True)
 
@@ -44,6 +45,3 @@ class Comment(models.Model):
     parent = models.ForeignKey(Parent, related_name = "comments", on_delete = models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now = True)
-
-
-

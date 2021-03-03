@@ -6,12 +6,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     {% load static %}
     <link rel="stylesheet" href="{% static 'login_style.css' %}">
-    <title>TripBuddy: Log In or Register!</title>
+    <title>Book: Log In or Register!</title>
 </head>
 <body>
 <div id="wrapper">
     <header>
-        <h1>Welcome!  Let's travel!</h1>
+        <h1>Welcome!  Let's read!</h1>
         
         {% if messages %}
         <ul class="error_list">
@@ -44,6 +44,11 @@
             </div>
 
             <div class="row">
+                <label for="username">Username</label>
+                <input type="text" class="fix_width" name="username" id="username">
+            </div>
+
+            <div class="row">
                 <label for="password">Password</label>
                 <input type="password" class="fix_width" name="password" id="password">
             </div>
@@ -65,13 +70,13 @@
                 <h2>Log in:</h2>
     
                 <div class="row">
-                    <label for="email">Email address</label>
-                    <input type="email" class="fix_width" name="email">
+                    <label for="username">Username or email</label>
+                    <input type="text" class="fix_width" name="username" id="username">
                 </div>
     
                 <div class="row">
                     <label for="password">Password</label>
-                    <input type="password" class="fix_width" name="password">
+                    <input type="password" class="fix_width" name="password" id="password">
                 </div>
         
                 <div class="centerflex">
