@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect, HttpResponse
 from login_app.models import User
 from .models import *
+from django.contrib import messages
 
 # Create your views here.
 def index(request):
@@ -48,6 +49,58 @@ def delete_comment(request, comment_id):
 
     this_comment.delete()
 
-
-
     return redirect(f"/users/{redirect_id}")
+
+
+def show_friends(request, user_id):
+    context = {
+        "user": User.objects.get(id=user_id)
+    }
+
+    return render(request, "friends.html", context)
+
+
+def search_users(request):
+
+    first_name = request.POST["first_name"]
+    last_name = request.POST["last_name"]
+    username = request.POST["username"]
+    email = request.POST["email"]
+    
+    return redirect(f"/users/search/f_{first_name}/l_{last_name}/u_{username}/e_{email}")
+
+
+def show_user_search(request, first_name, last_name, username, email):
+    
+
+    terms = {}
+
+    if len(first_name) > 2:
+        terms["first_name"] = first_name[2:]
+    if len(last_name) > 2:
+        terms["last_name"] = last_name[2:]
+    if len(username) > 2:
+        terms["username"] = username[2:]
+    if len(email) > 2:
+        terms["email"] = email[2:]
+
+    if terms == {}:
+        messages.error(request, "Please enter at least one search term!")
+        return render(request, "list_friend_search.html")
+
+    options = User.objects.all()
+
+    if "first_name" in terms:
+        options = options.filter(first_name = terms["first_name"])
+    if "last_name" in terms:
+        options = options.filter(last_name = terms["last_name"])
+    if "username" in terms:
+        options = options.filter(username = terms["username"])
+    if "email" in terms:
+        options = options.filter(email = terms["email"])
+
+    context = {
+        "options": options
+    }
+
+    return render(request, "list_friend_search.html", context)
