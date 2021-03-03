@@ -37,6 +37,7 @@ class User(models.Model):
     email = models.CharField(max_length = 255)
     username = models.CharField(max_length = 255)
     hashed_pw = models.CharField(max_length = 255)
+    friends = models.ManyToManyField("User")
     created_at = models.DateTimeField(auto_now_add = True)
     updated_at = models.DateTimeField(auto_now = True)
     objects = UserManager()

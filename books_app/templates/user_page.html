@@ -5,6 +5,15 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <style>
+        .border{
+            border: 1px solid black;
+            display: inline-block;
+            width: 60%;
+            padding: 0 10px 10px;
+            margin-bottom: 5px;
+        }
+    </style>
 </head>
 <body>
 <div id="wrapper">
@@ -21,16 +30,77 @@
     </header>
 
     <aside id="shelves">
-        <h3>Shelves:</h3>
-        <ul id="shelves">
+        <h2>Shelves:</h2>
+        <ul id="shelflist">
         {% for shelf in user.shelves.all %}
             <li><a href="/shelves/{{shelf.id}}">{{shelf.name}}</a></li>
         {% endfor %}
-
-
-
-
     </aside>
+
+    <aside id="friends">
+        <h2>Friends:</h2>
+        <ul id="friendlist">
+            {% if user.friends.count == 0 %}
+            <li>You don't have any friends :(</li>
+            
+            {% else %}
+                {% for friend in user.friends.all %}
+                <li><a href="/users/{{friend.id}}">{{friend.first_name}} {{friend.last_name}}</a></li>
+                {% endfor %}
+            
+            {% endif %}
+    </aside>
+
+    <main>
+        <h2>Wall</h2>
+        
+        {% for post in user.posts_on_wall.all %}
+        <div class="border">
+            <h4>{{post.poster.first_name}} {{post.poster.last_name}}, at {{post.created_at}}</h4>
+            <p class="wallpost">{{post.contents}}</p>
+            
+            {% if post.poster.id == request.session.user_id %}
+                <p><a href="/posts/{{post.id}}/delete">Delete this post</a></p>
+            {% endif %}
+
+
+            {% for comment in post.comments.all %}
+            <div class="border">
+                <h4>{{comment.commenter.first_name}} {{comment.commenter.last_name}}, at {{comment.created_at}}</h4>
+                <p class="comment">{{comment.contents}}</p>
+
+                {% if comment.commenter.id == request.session.user_id %}
+                    <p><a href="/comments/{{comment.id}}/delete">Delete this comment</a></p>
+                {% endif %}
+            </div>
+            {% endfor %}
+
+            <div class="border">
+                <form method="POST" action="/posts/{{post.id}}/add_comment">
+                {% csrf_token %}
+                    <p><label for="comment">Write a comment:</label></p>
+                    <textarea class="comment" rows=4 cols=30 name="comment" id="comment"></textarea>
+                    <input type="submit" value="Comment">
+                </form>
+            </div>
+        </div>
+        {% endfor %}
+
+        <div class="border">
+            <form method="POST" action="/users/{{user.id}}/add_wallpost">
+            {% csrf_token %}
+                <p><label for="add_post">Write on {{user.first_name}}'s wall:</label></p>
+                <textarea class="wallpost" rows=6 cols=40 name="add_post" id="add_post"></textarea>
+                <input type="submit" value="Post to wall">
+            </form>
+        </div>
+
+
+        </form>
+
+
+
+    </main>
 
 </div>
 </body>
