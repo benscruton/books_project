@@ -16,6 +16,12 @@
             padding: 0 10px 10px;
             margin-bottom: 5px;
         }
+        .inline{
+            display: inline;
+        }
+        form{
+            display: inline;
+        }
     </style>
 </head>
 <body>
@@ -37,21 +43,31 @@
 
         
         {% if user in logged_in_user.friends.all %}
-            <p>You are friends! <a href="/users/{{user.id}}/remove_friend">unfriend</a></p>
+            <p class="inline">You are friends!</p>
+            <form action="/users/{{user.id}}/remove_friend">
+                <button>Unfriend</button>
+            </form>
 
         {% else %}
             {% if user in logged_in_user.added_friends.all %}
                 <p>Added!  Awaiting response</p>
             {% elif user in logged_in_user.added_by.all %}
-                <p>Respond to friend request:</p>
-                <p>
-                    <a href="/users/{{user.id}}/accept_friend">Accept</a>
-                    |
-                    <a href="/users/{{user.id}}/ignore_friend">Ignore</a>
-                </p>
+                <p>Respond to {{user.first_name}}'s friend request:</p>
+                <div>
+                    <form style="display: inline;" action="/users/{{user.id}}/accept_friend">
+                        <button>Accept</button>
+                    </form>
+                    <form style="display: inline;" action="/users/{{user.id}}/ignore_friend">
+                        <button>Ignore</button>
+                    </form>
+                </div>
 
             {% else %}
-                <p><a href="/users/{{user.id}}/add_friend">Add {{user.first_name}} to friends</a></p>
+                <form action="/users/{{user.id}}/add_friend">
+                    <button>
+                        Add {{user.first_name}} to friends
+                    </button>
+                </form>
             {% endif %}
         {% endif %}
 
@@ -62,18 +78,19 @@
                 {% if potential_friend.id != user.id %}
             
                     <p>You have a new friend request from <a href="/users/{{potential_friend.id}}">{{potential_friend.first_name}} {{potential_friend.last_name}}</a>!</p>
-                    <p>
-                        <a href="/users/{{potential_friend.id}}/accept_friend">Accept</a>
-                        |
-                        <a href="/users/{{potential_friend.id}}/ignore_friend">Ignore</a>
-                    </p>
+                    <div>
+                        <form style="display: inline;" action="/users/{{potential_friend.id}}/accept_friend">
+                            <button>Accept</button>
+                        </form>
+                        <form style="display: inline;" action="/users/{{potential_friend.id}}/ignore_friend">
+                            <button>Ignore</button>
+                        </form>
+                    </div>
 
                 {% endif %}
 
             {% endfor %}
 
-        {% else %}
-            <p>No one loves you :(</p>
         {% endif %}
 
 

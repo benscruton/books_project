@@ -28,12 +28,7 @@
         <p>(Logged in as {{request.session.first_name}} {{request.session.last_name}})</p>
         <h1>Search For Friends</h1>
 
-        {% if messages %}
-            {% for message in messages %}
-                <p{% if message.tags %} class="{{message.tags}}"{% endif %}>{{message}}</p>
-            {% endfor %}
-        {% endif %}
-
+        
         <ul id="navbar">
             <li>Books Dashboard</li>
             <li>Shelves</li>
@@ -42,7 +37,12 @@
             <li><a href="/users/{{request.session.user_id}}/friends">Friends</a></li>
             <li><a href="/login/users/logout">Log out</a></li>
         </ul>
-
+        
+        {% if messages %}
+            {% for message in messages %}
+                <p{% if message.tags %} class="{{message.tags}}"{% endif %}>{{message}}</p>
+            {% endfor %}
+        {% endif %}
     </header>
 
     <main class="border">

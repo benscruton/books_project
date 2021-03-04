@@ -136,6 +136,29 @@ def show_user_search(request, first_name, last_name, username, email):
     return render(request, "list_friend_search.html", context)
 
 
+
+def search_friends(request, user_id):
+    terms = request.POST["friend_search"].split()
+
+    if len(terms) <= 0:
+        messages.error(request, "Please enter at least one character to search!")
+        return redirect(f"/users/{request.session['user_id']}/friends")
+    
+    all_options = User.objects.get(id=user_id).friends.all()
+    options = User.objects.get(id=user_id).friends.all()
+
+    for i in range(len(terms)):
+        f_options = all_options.filter(first_name__istartswith = terms[i])
+        l_options = all_options.filter(last_name__istartswith = terms[i])
+        comb_options = f_options.union(l_options)
+        options = options.intersection(comb_options)
+
+        context = {
+            "options": options
+        }
+    return render(request, "list_friend_search.html", context)
+    
+
 def add_friend(request, user_id):
     potential_friend = User.objects.get(id=user_id)
     logged_in_user = User.objects.get(id=request.session["user_id"])

@@ -37,16 +37,17 @@
         {% if new_requests %}
             {% for potential_friend in new_requests %}
                 <p>You have a new friend request from <a href="/users/{{potential_friend.id}}">{{potential_friend.first_name}} {{potential_friend.last_name}}</a>!</p>
-                <p>
-                    <a href="/users/{{potential_friend.id}}/accept_friend">Accept</a>
-                    |
-                    <a href="/users/{{potential_friend.id}}/ignore_friend">Ignore</a>
-                </p>
+                <div>
+                    <form style="display: inline;" action="/users/{{potential_friend.id}}/accept_friend">
+                        <button>Accept</button>
+                    </form>
+                    <form style="display: inline;" action="/users/{{potential_friend.id}}/ignore_friend">
+                        <button>Ignore</button>
+                    </form>
+                </div>
 
             {% endfor %}
 
-        {% else %}
-            <p>No one loves you :(</p>
         {% endif %}        
 
     </header>

@@ -38,58 +38,92 @@
         </ul>
 
         {% if new_requests %}
-                {% for potential_friend in new_requests %}
-                    <p>You have a new friend request from <a href="/users/{{potential_friend.id}}">{{potential_friend.first_name}} {{potential_friend.last_name}}</a>!</p>
-                    <p>
-                        <a href="/users/{{potential_friend.id}}/accept_friend">Accept</a>
-                        |
-                        <a href="/users/{{potential_friend.id}}/ignore_friend">Ignore</a>
-                    </p>
+            {% for potential_friend in new_requests %}
+                <p>You have a new friend request from <a href="/users/{{potential_friend.id}}">{{potential_friend.first_name}} {{potential_friend.last_name}}</a>!</p>
+                <div>
+                    <form style="display: inline;" action="/users/{{potential_friend.id}}/accept_friend">
+                        <button>Accept</button>
+                    </form>
+                    <form style="display: inline;" action="/users/{{potential_friend.id}}/ignore_friend">
+                        <button>Ignore</button>
+                    </form>
+                </div>
 
-                {% endfor %}
+            {% endfor %}
+        {% endif %}
 
-            {% else %}
-                <p>No one loves you :(</p>
-            {% endif %}
+
+
+
+        {% if messages %}
+            {% for message in messages %}
+                <p{% if message.tags %} class="{{message.tags}}"{% endif %}>{{message}}</p>
+            {% endfor %}
+        {% endif %}
 
     </header>
 
     <main>
-        <aside class="border">
+        <div class="row">
+            <h2>Your Friends:</h2>
+        </div>
+
+        <aside id="search_new" class="border">
             <h2>Find Users By:</h2>
             <form method="POST" action="/users/search">
             {% csrf_token %}
-                <input type="text" placeholder="First Name..." name="first_name">
+                <div><input type="text" placeholder="First Name..." name="first_name"></div>
 
-                <input type="text" placeholder="Last Name..." name="last_name">
+                <div><input type="text" placeholder="Last Name..." name="last_name"></div>
 
-                <input type="text" placeholder="Username..." name="username">
+                <div><input type="text" placeholder="Username..." name="username"></div>
 
-                <input type="email" placeholder="Email..." name="email">
+                <div><input type="email" placeholder="Email..." name="email"></div>
+
                 <input type="submit" hidden>
             </form>
 
         </aside>
 
-        <form method="POST" action="/users/{{user.id}}/friends/search">
+        <form id="friend_search" method="POST" action="/users/{{user.id}}/friends/search">
         {% csrf_token %}
-            <label for="searchmyfriends">Search Friends...</label>
-            <input type="text"  name="searchmyfriends" id="searchmyfriends">
+            <label for="friend_search">Search Friends...</label>
+            <input type="text"  name="friend_search" id="friend_search">
         <input type="submit" hidden>
         </form>
 
         
         
-        <h2>Your Friends:</h2>
-        <ul id="friendlist">
             {% if user.friends.count == 0 %}
-            <li>You don't have any friends :(</li>
+            <div class="friend_box">You don't have any friends :(</div>
             
             {% else %}
             {% for friend in user.friends.all %}
-            <li><a href="/users/{{friend.id}}">{{friend.first_name}} {{friend.last_name}}</a></li>
+
+
+
+
+
+            <div class="friend_box">
+                <a href="/users/{{friend.id}}">{{friend.first_name}} {{friend.last_name}}</a>
+                <p>Last activity:</p>
+
+            </div>
+
+
+
+
+
+
+
             {% endfor %}
             
+
+
+
+
+
+
             {% endif %}
         </ul>
 
