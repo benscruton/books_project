@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{user.first_name}} {{user.last_name}}'s Profile</title>
+    <title>My Profile</title>
     <style>
         #wrapper{
             background-color: #a8eba8
@@ -22,10 +22,8 @@
 <div id="wrapper">
     <header>
         <p>(Hi, {{request.session.first_name}}!)</p>
+        <h1>Your Profile</h1>
 
-                    
-        <h1>{{user.first_name}} {{user.last_name}}'s Profile</h1>
-        
         <ul id="navbar">
            <li>Books Dashboard</li>
             <li>Shelves</li>
@@ -35,77 +33,36 @@
             <li><a href="/login/users/logout">Log out</a></li>
         </ul>
 
-        
-        {% if user in logged_in_user.friends.all %}
-            <p>You are friends! <a href="/users/{{user.id}}/remove_friend">unfriend</a></p>
-
-        {% else %}
-            {% if user in logged_in_user.added_friends.all %}
-                <p>Added!  Awaiting response</p>
-            {% elif user in logged_in_user.added_by.all %}
-                <p>Respond to friend request:</p>
-                <p>
-                    <a href="/users/{{user.id}}/accept_friend">Accept</a>
-                    |
-                    <a href="/users/{{user.id}}/ignore_friend">Ignore</a>
-                </p>
-
-            {% else %}
-                <p><a href="/users/{{user.id}}/add_friend">Add {{user.first_name}} to friends</a></p>
-            {% endif %}
-        {% endif %}
-
 
         {% if new_requests %}
             {% for potential_friend in new_requests %}
-                    
-                {% if potential_friend.id != user.id %}
-            
-                    <p>You have a new friend request from <a href="/users/{{potential_friend.id}}">{{potential_friend.first_name}} {{potential_friend.last_name}}</a>!</p>
-                    <p>
-                        <a href="/users/{{potential_friend.id}}/accept_friend">Accept</a>
-                        |
-                        <a href="/users/{{potential_friend.id}}/ignore_friend">Ignore</a>
-                    </p>
-
-                {% endif %}
+                <p>You have a new friend request from <a href="/users/{{potential_friend.id}}">{{potential_friend.first_name}} {{potential_friend.last_name}}</a>!</p>
+                <p>
+                    <a href="/users/{{potential_friend.id}}/accept_friend">Accept</a>
+                    |
+                    <a href="/users/{{potential_friend.id}}/ignore_friend">Ignore</a>
+                </p>
 
             {% endfor %}
 
         {% else %}
             <p>No one loves you :(</p>
-        {% endif %}
-
-
+        {% endif %}        
 
     </header>
 
 
-
-
-
-
-
-
-    {% if user in logged_in_user.friends.all %}
-
-        <aside id="shelves">
-            <h2>{{user.first_name}}'s Shelves:</h2>
-            <ul id="shelflist">
-            {% for shelf in user.shelves.all %}
-                <li><a href="/shelves/{{shelf.id}}">{{shelf.name}}</a></li>
-            {% endfor %}
-        </aside>
-    {% endif %}
-
-
+    <aside id="shelves">
+        <h2>Your Shelves:</h2>
+        <ul id="shelflist">
+        {% for shelf in user.shelves.all %}
+            <li><a href="/shelves/{{shelf.id}}">{{shelf.name}}</a></li>
+        {% endfor %}
+    </aside>
 
 
     <aside>
-    {% if user in logged_in_user.friends.all %}
-
-        <h2>{{user.first_name}}'s Friends:</h2>
-
+        <h2>Your Friends:</h2>
 
         <ul id="friendlist">
             {% if user.friends.count == 0 %}
@@ -117,31 +74,11 @@
                 {% endfor %}
             {% endif %}
         </ul>
-
-    {% else %}
-        <h2>Mutual Friends with {{user.first_name}} {{user.last_name}}</h2>
-
-        <ul id="friendlist">
-            {% if mutual_friends.count == 0 %}
-                <li>You have no mutual friends</li>
-            
-            {% else %}
-                {% for friend in mutual_friends %}
-                    <li><a href="/users/{{friend.id}}">{{friend.first_name}} {{friend.last_name}}</a></li>
-
-                {% endfor %}
-            {% endif %}
-            
-        </ul>
-    {% endif %}
     </aside>
         
 
 
-
     <main>
-
-    {% if user in logged_in_user.friends.all %}
         <h2>Wall</h2>
 
         <div class="border">
@@ -158,9 +95,7 @@
             <h4><a href="/users/{{post.poster.id}}">{{post.poster.first_name}} {{post.poster.last_name}}</a>, at {{post.created_at}}</h4>
             <p class="wallpost">{{post.contents}}</p>
             
-            {% if post.poster.id == request.session.user_id %}
-                <p><a href="/posts/{{post.id}}/delete">Delete this post</a></p>
-            {% endif %}
+            <p><a href="/posts/{{post.id}}/delete">Delete this post</a></p>
 
 
             {% for comment in post.comments.all %}
@@ -168,9 +103,7 @@
                 <h4><a href="/users/{{comment.commenter.id}}">{{comment.commenter.first_name}} {{comment.commenter.last_name}}</a>, at {{comment.created_at}}</h4>
                 <p class="comment">{{comment.contents}}</p>
 
-                {% if comment.commenter.id == request.session.user_id %}
                     <p><a href="/comments/{{comment.id}}/delete">Delete this comment</a></p>
-                {% endif %}
             </div>
             {% endfor %}
 
@@ -185,14 +118,10 @@
         </div>
         {% endfor %}
 
-
-
         </form>
 
-    {% else %}
-        <p> Add this user as a friend to see more about them!</p>
 
-    {% endif %}
+
     </main>
 
 </div>

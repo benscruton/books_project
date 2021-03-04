@@ -9,6 +9,7 @@ def index(request):
 
 
 def check_friend_requests(data):
+    # Call this function from any function that renders a page, if you want friend requests to show up on that page.
     this_user = User.objects.get(id=data["user_id"])
     new_requests = []
     
@@ -29,14 +30,18 @@ def view_user(request, user_id):
 
     context = {
         "user": this_user,
-        "logged_in_user": logged_in_user,
         "wallposts": WallPost.objects.filter(wall = this_user).order_by("-created_at"),
-        "mutual_friends": User.objects.filter(friends__in=[this_user]).filter(friends__in=[logged_in_user]),
         "new_requests": new_requests
     }
 
+    if user_id == request.session["user_id"]:
+        return render(request, "my_profile.html", context)
+
+    context["logged_in_user"] = logged_in_user
+    context["mutual_friends"] = User.objects.filter(friends__in=[this_user]).filter(friends__in=[logged_in_user])
 
     return render(request, "user_page.html", context)
+
 
 
 def post_on_wall(request, user_id):
