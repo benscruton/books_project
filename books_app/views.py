@@ -4,17 +4,44 @@ from .models import *
 
 # Create your views here.
 def index(request):
-    return render(request, "dashboard.html")
+    context = {
+        "user": User.objects.get(id=request.session['user_id']),
+    }
+    return render(request, "dashboard.html", context)
 
 def add_book(request):
-    return render(request, "add_book.html")
+    context = {
+        'book' : Book.objects.all(),
+    }
+    return render(request, "add_book.html", context)
 
-def create_book(reaquest, book_id):
-    return redirect(f"books/{book_id}")
+def create_book(request):
+    book = Book.objects.create(
+        title = request.POST['title'],
+        author_firstname = request.POST['author_firstname'],
+        author_lastname = request.POST['author_lastname'],
+        description = request.POST['description'],
+        year = request.POST['year'],
+        ISBN = request.POST['ISBN'],
+    )
+    return redirect(f'/books/{book.id}')
 
-def book_detail(request):
-    return render(request, "book_detail.html")
-    return HttpResponse("Website works!")
+def book_detail(request, book_id):
+    context = {
+        'book': Book.objects.get(id=book_id),
+        "user": User.objects.get(id=request.session['user_id']),
+        "shelves": Shelf.objects.filter(owner=User.objects.get(id=request.session['user_id'])),
+        }
+    return render(request, "book_detail.html", context)
+
+def search_book(request, book_id):
+    Book.objects.filter(
+        title = request.POST['title'],
+        author_firstname = request.POST['author_firstname'],
+        author_lastname = request.POST['author_lastname'],
+        ISBN = request.POST['ISBN']
+    )
+    return redirect(f"/books/{book_id}")
 
 
 def view_user(request, user_id):
@@ -61,3 +88,38 @@ def delete_comment(request, comment_id):
 
 
     return redirect(f"/users/{redirect_id}")
+
+def user_shelves(request):
+    user = User.objects.get(id=request.session['user_id'])
+    shelves = Shelf.objects.filter(owner=User.objects.get(id=request.session['user_id']))
+    context = {
+        "user": user,
+        "shelves": shelves,
+    }
+    return render(request, "user_shelves.html", context)
+
+def create_shelf(request):
+    user = User.objects.get(id=request.session['user_id'])
+    shelf = Shelf.objects.create(
+        name=request.POST['name'],
+        owner = user,
+    )
+    return redirect(f'user_shelves')
+
+def add_to_shelf(request, book_id):
+    shelf_id = request.POST['shelf']
+    shelf = Shelf.objects.get(id=shelf_id)
+    shelf.books.add(Book.objects.get(id=book_id))
+
+    return redirect(f'/books/{book_id}')
+
+def shelf(request, shelf_id):
+    shelf = Shelf.objects.get(id=shelf_id)
+    
+    context = {
+    'shelf': shelf,
+    "user": User.objects.get(id=request.session['user_id']),
+    "books" : shelf.books.all
+    }
+
+    return render(request, "shelf.html", context)

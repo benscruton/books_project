@@ -1,30 +1,34 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>git 
+{% extends "base.html" %}
+{% block content %}
+
     <section id="detail_box">
         <h1>{{book.title}}</h1>
-        <p> Author: {{book.author_firtname}} {{book.author_lastname}}</p>
-        <p>description: {{book.descripion}}</p>
-        <p>ISBN: {{book.isbn}}</p>
+        <p> Author: {{ book.author_firstname}} {{ book.author_lastname}} </p>
+        <p>description: {{book.description}}</p>
+        <p>ISBN: {{book.ISBN}}</p>
     </section>
 
     <section id="Action_box">
         <h3>Actions</h3>
-        <select name="" id="">
-            <option value=""></option>
-        </select>
-        <input type="submit"><br>
-
-        <select name="" id="">
-            <option value=""></option>
-        </select>
-        <input type="submit">
+        Add to Shelf 
+        <form action="{% url 'add_to_shelf' book.id %}" method="POST">
+        {% csrf_token %}
+            <div>
+                <select name="shelf">
+                    {% for shelf in shelves.all %}
+                        <option value="{{shelf.id}}">{{shelf.name}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <input type="submit" class="btn"><br>
+        </form>
+        {% comment %} <form action=""method="POST">
+        {% csrf_token %}
+            <select name="" id="">
+                <option value="{{friend.id}}">{{friend.last_name}} {{friend.last_name}}</option>
+            </select>
+            <input type="submit class="btn">
+        </form> {% endcomment %}
     </section>
-</body>
-</html>
+
+{% endblock %}

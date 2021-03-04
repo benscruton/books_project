@@ -24,8 +24,8 @@
             <h1>{{user.first_name}} {{user.last_name}} Home</h1>
         {% endif %}
         <ul id="navbar">
-            <li>Books Dashboard</li>
-            <li>Shelves</li>
+            <li><a href="{% url 'dashboard' %}">Books Dashboard</a></li>
+            <li><a href="{% url 'user_shelves' %}">Shelves</a></li>
             <li><a href="/users/{{request.session.user_id}}">Profile</a></li>
             <li>Wall</li>
             <li>Friends</li>

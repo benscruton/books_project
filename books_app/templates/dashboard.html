@@ -1,23 +1,24 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    <h2>
-    find A Book</h2>
+{% extends "base.html" %}
+{% block content %}
 
-    <form action="/books/locate" method="POST">
-        {%csrf_token%}
-        Title <input type="text" name="title">
-        Author <input type="text" name="author" >
-        ISBN <input type="text" name="">
-        <input type="submit">
-    </form>
-    <p>Can't find what you are looking for?</p>
-    <a href="/books/add">Add a Book</a>
-</body>
-</html>
+<h1 class="center-align">Books Dashboard</h1>
+<h4 class="center-align">find A Book</h4>
+    <main id="find_book">
+        <form action="/books/search" method="POST">
+            <div id="row">
+                {%csrf_token%}
+                Title <input type="text" name="title" class="form-control"><br>
+                Author First Name <input type="text" name="author_firstname" class="form-control" ><br>
+                Author Last Name <input type="text" name="author_lastname" class="form-control"><br>
+                ISBN <input type="text" name="ISBN" class="form-control"><br>
+                <button type="submit" class="btn btn-primary">Find Book</button>
+            </div>
+        </form>
+    </main>
+    <p class="center-align">Can't find what you are looking for? </p>
+    <div class="center-align">
+        <a href="/books/add" ><button class="btn btn-primary">Add Book</button></a>
+    </div>
+
+
+{% endblock %}
