@@ -4,8 +4,11 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>{{user.first_name}} {{user.last_name}}'s Profile</title>
     <style>
+        #wrapper{
+            background-color: #a8eba8
+        }
         .border{
             border: 1px solid black;
             display: inline-block;
@@ -13,36 +16,114 @@
             padding: 0 10px 10px;
             margin-bottom: 5px;
         }
+        .inline{
+            display: inline;
+        }
+        form{
+            display: inline;
+        }
     </style>
 </head>
 <body>
 <div id="wrapper">
     <header>
-        {% if user.id == request.session.user_id %}
-            <h1>Your Home</h1>
-        {% else %}
-            <h1>{{user.first_name}} {{user.last_name}} Home</h1>
-        {% endif %}
+        <p>(Hi, {{request.session.first_name}}!)</p>
+
+                    
+        <h1>{{user.first_name}} {{user.last_name}}'s Profile</h1>
+        
         <ul id="navbar">
             <li><a href="{% url 'dashboard' %}">Books Dashboard</a></li>
             <li><a href="{% url 'user_shelves' %}">Shelves</a></li>
             <li><a href="/users/{{request.session.user_id}}">Profile</a></li>
             <li>Wall</li>
-            <li>Friends</li>
+            <li><a href="/users/{{request.session.user_id}}/friends">Friends</a></li>
             <li><a href="/login/users/logout">Log out</a></li>
         </ul>
+
+        
+        {% if user in logged_in_user.friends.all %}
+            <p class="inline">You are friends!</p>
+            <form action="/users/{{user.id}}/remove_friend">
+                <button>Unfriend</button>
+            </form>
+
+        {% else %}
+            {% if user in logged_in_user.added_friends.all %}
+                <p>Added!  Awaiting response</p>
+            {% elif user in logged_in_user.added_by.all %}
+                <p>Respond to {{user.first_name}}'s friend request:</p>
+                <div>
+                    <form style="display: inline;" action="/users/{{user.id}}/accept_friend">
+                        <button>Accept</button>
+                    </form>
+                    <form style="display: inline;" action="/users/{{user.id}}/ignore_friend">
+                        <button>Ignore</button>
+                    </form>
+                </div>
+
+            {% else %}
+                <form action="/users/{{user.id}}/add_friend">
+                    <button>
+                        Add {{user.first_name}} to friends
+                    </button>
+                </form>
+            {% endif %}
+        {% endif %}
+
+
+        {% if new_requests %}
+            {% for potential_friend in new_requests %}
+                    
+                {% if potential_friend.id != user.id %}
+            
+                    <p>You have a new friend request from <a href="/users/{{potential_friend.id}}">{{potential_friend.first_name}} {{potential_friend.last_name}}</a>!</p>
+                    <div>
+                        <form style="display: inline;" action="/users/{{potential_friend.id}}/accept_friend">
+                            <button>Accept</button>
+                        </form>
+                        <form style="display: inline;" action="/users/{{potential_friend.id}}/ignore_friend">
+                            <button>Ignore</button>
+                        </form>
+                    </div>
+
+                {% endif %}
+
+            {% endfor %}
+
+        {% endif %}
+
+
+
     </header>
 
-    <aside id="shelves">
-        <h2>Shelves:</h2>
-        <ul id="shelflist">
-        {% for shelf in user.shelves.all %}
-            <li><a href="/shelves/{{shelf.id}}">{{shelf.name}}</a></li>
-        {% endfor %}
-    </aside>
 
-    <aside id="friends">
-        <h2>Friends:</h2>
+
+
+
+
+
+
+    {% if user in logged_in_user.friends.all %}
+
+        <aside id="shelves">
+            <h2>{{user.first_name}}'s Shelves:</h2>
+            <ul id="shelflist">
+            {% for shelf in user.shelves.all %}
+                <li><a href="/shelves/{{shelf.id}}">{{shelf.name}}</a></li>
+            {% endfor %}
+        </aside>
+    {% endif %}
+
+
+
+
+    <aside>
+    {% if user in logged_in_user.friends.all %}
+
+        <h2>{{user.first_name}}'s Friends:</h2>
+
+
         <ul id="friendlist">
             {% if user.friends.count == 0 %}
             <li>You don't have any friends :(</li>
@@ -51,14 +132,45 @@
                 {% for friend in user.friends.all %}
                 <li><a href="/users/{{friend.id}}">{{friend.first_name}} {{friend.last_name}}</a></li>
                 {% endfor %}
-            
             {% endif %}
+        </ul>
+
+    {% else %}
+        <h2>Mutual Friends with {{user.first_name}} {{user.last_name}}</h2>
+
+        <ul id="friendlist">
+            {% if mutual_friends.count == 0 %}
+                <li>You have no mutual friends</li>
+            
+            {% else %}
+                {% for friend in mutual_friends %}
+                    <li><a href="/users/{{friend.id}}">{{friend.first_name}} {{friend.last_name}}</a></li>
+
+                {% endfor %}
+            {% endif %}
+            
+        </ul>
+    {% endif %}
     </aside>
+        
+
+
 
     <main>
+
+    {% if user in logged_in_user.friends.all %}
         <h2>Wall</h2>
+
+        <div class="border">
+            <form method="POST" action="/users/{{user.id}}/add_wallpost">
+            {% csrf_token %}
+                <p><label for="add_post">Write on {% if user.id == request.session.user_id %}your{% else %}{{user.first_name}}'s{% endif%} wall:</label></p>
+                <textarea class="wallpost" rows=6 cols=40 name="add_post" id="add_post"></textarea>
+                <input type="submit" value="Post to wall">
+            </form>
+        </div>
         
-        {% for post in user.posts_on_wall.all %}
+        {% for post in wallposts %}
         <div class="border">
             <h4><a href="/users/{{post.poster.id}}">{{post.poster.first_name}} {{post.poster.last_name}}</a>, at {{post.created_at}}</h4>
             <p class="wallpost">{{post.contents}}</p>
@@ -90,20 +202,14 @@
         </div>
         {% endfor %}
 
-        <div class="border">
-            <form method="POST" action="/users/{{user.id}}/add_wallpost">
-            {% csrf_token %}
-                <p><label for="add_post">Write on {% if user.id == request.session.user_id %}your{% else %}{{user.first_name}}'s{% endif%} wall:</label></p>
-                <textarea class="wallpost" rows=6 cols=40 name="add_post" id="add_post"></textarea>
-                <input type="submit" value="Post to wall">
-            </form>
-        </div>
 
 
         </form>
 
+    {% else %}
+        <p> Add this user as a friend to see more about them!</p>
 
-
+    {% endif %}
     </main>
 
 </div>

@@ -15,5 +15,18 @@ urlpatterns = [
     path('shelf', views.user_shelves, name="user_shelves"),
     path('shelf/create', views.create_shelf, name="create_shelf"),
     path('book/<int:book_id>/shelf/add', views.add_to_shelf, name="add_to_shelf"),
-    path('shelf/<int:shelf_id>', views.shelf, name="shelf_id")
+    path('shelf/<int:shelf_id>', views.shelf, name="shelf_id"),
+    path("users/<int:user_id>/friends", views.show_friends),
+    path("users/search", views.search_users),
+    path("users/search/<str:first_name>/<str:last_name>/<str:username>/<str:email>", views.show_user_search),
+    path("users/<int:user_id>/friends/search", views.search_friends),
+    path("users/<int:user_id>/add_friend", views.add_friend),
+    path("users/<int:user_id>/accept_friend", views.accept_friend),
+    path("users/<int:user_id>/ignore_friend", views.ignore_friend),
+    path("users/<int:user_id>/remove_friend", views.remove_friend),
+
+
+    
+
+
 ]
