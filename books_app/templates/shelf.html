@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h3>{{ shelf.name }}</h3>
+<div class="row1">
+    <div class="col">
+        {% for book in shelf.books.all %}
+            <div class="card">
+                <div class="card-content">
+                    <span class="card-title"><a href="{% url 'book_detail' book.id %}">{{ book.title }}</a></span>
+                    <p>Description: {{ book.description }}</p>
+                    <p>Added By: {{ book.uploaded_by.first_name }} {{ book.uploaded_by.last_name }}</p>
+                    <p>Added On: {{ book.created_at }}</p>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+
+{% endblock %}

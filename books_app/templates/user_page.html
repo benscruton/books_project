@@ -26,8 +26,8 @@
         {% endif %}
 
         <ul id="navbar">
-           <li>Books Dashboard</li>
-            <li>Shelves</li>
+            <li><a href="{% url 'dashboard' %}">Books Dashboard</a></li>
+            <li><a href="{% url 'user_shelves' %}">Shelves</a></li>
             <li><a href="/users/{{request.session.user_id}}">Profile</a></li>
             <li>Wall</li>
             <li><a href="/users/{{request.session.user_id}}/friends">Friends</a></li>

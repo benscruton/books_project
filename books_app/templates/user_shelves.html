@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h3 class="center-align">{{user.first_name}}'s Shelves</h3>
+
+    <table class="highlight">
+        <thead>
+            <th>Name</th>
+            <th>Last Book</th>
+            <th>Date</th>
+        </thead>
+        <tbody>
+            <tr>
+                {% for shelf in shelves.all %}
+                <td><a href="{% url 'shelf_id' shelf.id %}">{{ shelf.name }}</a></td>
+                <td>{{ shelf.books.last.title }}</td>
+                <td>{{ shelf.created_at }}</td>
+                <td>
+                    {% comment %} <a href="/shows/{{show.id}}/edit">Edit</a> |
+                    <a href="/shows/{{show.id}}/delete">Delete</a> {% endcomment %}
+                </td>
+            </tr>
+        </body>
+        {% endfor %}        
+    </table>
+    <section>
+        <form action="/shelf/create" method="POST">
+            {% csrf_token %}
+            <div class="input-field">
+                <input  type="text" placeholder="Add New Shelf Here...">
+                <button class="btn waves-effect waves-light" type="submit" name="action">Submit<i class="material-icons right">send</i></button>
+                {% comment %} <input type="submit" class="btn"></p> {% endcomment %}
+            </div>
+        </form>
+    </section>
+
+{% endblock %}
