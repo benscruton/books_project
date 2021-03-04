@@ -18,8 +18,6 @@ class UserManager(models.Manager):
             errors["email"] = "You must use a valid email address to register."
         if len(User.objects.filter(email = post_data["email"])) > 0:
             errors["email"] = "There is already a user registered with this email address."
-        # if len(post_data["username"]) < 1:
-        #     errors["username"] = "Username must be at least one character long."
         if len(User.objects.filter(username = post_data["username"])) > 0:
             errors["username"] = "There is already a user registered with this username."
         if len(post_data["password"]) < 8:
@@ -36,6 +34,7 @@ class User(models.Model):
     email = models.CharField(max_length = 255)
     username = models.CharField(max_length = 255)
     hashed_pw = models.CharField(max_length = 255)
+    added_friends = models.ManyToManyField("User", related_name = "added_by")
     friends = models.ManyToManyField("User")
     created_at = models.DateTimeField(auto_now_add = True)
     updated_at = models.DateTimeField(auto_now = True)

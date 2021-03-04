@@ -6,6 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <style>
+        #wrapper{
+            background-color: mistyrose;
+        }
         .border{
             border: 1px solid black;
             display: inline-block;
@@ -34,11 +37,26 @@
             <li><a href="/login/users/logout">Log out</a></li>
         </ul>
 
+        {% if new_requests %}
+                {% for potential_friend in new_requests %}
+                    <p>You have a new friend request from {{potential_friend.first_name}} {{potential_friend.last_name}}!</p>
+                    <p>
+                        <a href="/users/{{potential_friend.id}}/accept_friend">Accept</a>
+                        |
+                        <a href="/users/{{potential_friend.id}}/ignore_friend">Ignore</a>
+                    </p>
+
+                {% endfor %}
+
+            {% else %}
+                <p>No one loves you :(</p>
+            {% endif %}
+
     </header>
 
     <main>
         <aside class="border">
-            <h2>Add Friends By:</h2>
+            <h2>Find Users By:</h2>
             <form method="POST" action="/users/search">
             {% csrf_token %}
                 <input type="text" placeholder="First Name..." name="first_name">
@@ -48,8 +66,8 @@
                 <input type="text" placeholder="Username..." name="username">
 
                 <input type="email" placeholder="Email..." name="email">
-                <input type="submit" value="Search">
-                </form>
+                <input type="submit" hidden>
+            </form>
 
         </aside>
 
@@ -57,8 +75,24 @@
         {% csrf_token %}
             <label for="searchmyfriends">Search Friends...</label>
             <input type="text"  name="searchmyfriends" id="searchmyfriends">
-        <input type="submit" value="Search">
+        <input type="submit" hidden>
         </form>
+
+        
+        
+        <h2>Your Friends:</h2>
+        <ul id="friendlist">
+            {% if user.friends.count == 0 %}
+            <li>You don't have any friends :(</li>
+            
+            {% else %}
+            {% for friend in user.friends.all %}
+            <li><a href="/users/{{friend.id}}">{{friend.first_name}} {{friend.last_name}}</a></li>
+            {% endfor %}
+            
+            {% endif %}
+        </ul>
+
 
 
 

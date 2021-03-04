@@ -11,6 +11,11 @@ urlpatterns = [
     path("users/<int:user_id>/friends", views.show_friends),
     path("users/search", views.search_users),
     path("users/search/<str:first_name>/<str:last_name>/<str:username>/<str:email>", views.show_user_search),
+    path("users/<int:user_id>/add_friend", views.add_friend),
+    path("users/<int:user_id>/accept_friend", views.accept_friend),
+    path("users/<int:user_id>/ignore_friend", views.ignore_friend),
+    path("users/<int:user_id>/remove_friend", views.remove_friend),
+
 
     
 

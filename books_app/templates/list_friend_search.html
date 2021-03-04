@@ -6,6 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <style>
+        #wrapper{
+            background-color: aliceblue;
+        }
         .border{
             border: 1px solid black;
             display: inline-block;
@@ -42,26 +45,9 @@
 
     </header>
 
-    <main>
-
-        <aside class="border">
-            <h2>Add Friends By:</h2>
-            <form method="POST" action="/users/search">
-            {% csrf_token %}
-                <input type="text" placeholder="First Name..." name="first_name">
-
-                <input type="text" placeholder="Last Name..." name="last_name">
-
-                <input type="text" placeholder="Username..." name="username">
-
-                <input type="email" placeholder="Email..." name="email">
-                <input type="submit" value="Search">
-            </form>
-
-        </aside>
-
-
+    <main class="border">
         {% if options.count > 0 %}
+            <h2>Search Results:</h2>
             <ul>
                 {% for user in options %}
                 <li><a href="/users/{{user.id}}">{{user.first_name}} {{user.last_name}}</a></li>
@@ -73,6 +59,23 @@
 
 
     </main>
+
+    <aside class="border">
+        <h2>Search Again:</h2>
+        <form method="POST" action="/users/search">
+            {% csrf_token %}
+                <input type="text" placeholder="First Name..." name="first_name">
+
+                <input type="text" placeholder="Last Name..." name="last_name">
+
+                <input type="text" placeholder="Username..." name="username">
+
+                <input type="email" placeholder="Email..." name="email">
+                <input type="submit" hidden>
+            </form>
+        </form>
+
+    </aside>
 
 
 </div>

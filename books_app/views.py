@@ -8,10 +8,34 @@ def index(request):
     return HttpResponse("Website works!")
 
 
+def check_friend_requests(data):
+    this_user = User.objects.get(id=data["user_id"])
+    new_requests = []
+    
+    if (this_user.added_by.count() > this_user.friends.count()):
+        for add in this_user.added_by.all():
+            if add not in this_user.friends.all():
+                new_requests.append(add)
+
+    return new_requests
+
+
+
 def view_user(request, user_id):
+    new_requests = check_friend_requests(request.session)
+
+    this_user = User.objects.get(id=user_id)
+    logged_in_user = User.objects.get(id=request.session["user_id"])
+
     context = {
-        "user": User.objects.get(id = user_id),
+        "user": this_user,
+        "logged_in_user": logged_in_user,
+        "wallposts": WallPost.objects.filter(wall = this_user).order_by("-created_at"),
+        "mutual_friends": User.objects.filter(friends__in=[this_user]).filter(friends__in=[logged_in_user]),
+        "new_requests": new_requests
     }
+
+
     return render(request, "user_page.html", context)
 
 
@@ -53,8 +77,11 @@ def delete_comment(request, comment_id):
 
 
 def show_friends(request, user_id):
+    new_requests = check_friend_requests(request.session)
+
     context = {
-        "user": User.objects.get(id=user_id)
+        "user": User.objects.get(id=user_id),
+        "new_requests": new_requests
     }
 
     return render(request, "friends.html", context)
@@ -67,12 +94,10 @@ def search_users(request):
     username = request.POST["username"]
     email = request.POST["email"]
     
-    return redirect(f"/users/search/f_{first_name}/l_{last_name}/u_{username}/e_{email}")
+    return redirect(f"/users/search/f={first_name}/l={last_name}/u={username}/e={email}")
 
 
 def show_user_search(request, first_name, last_name, username, email):
-    
-
     terms = {}
 
     if len(first_name) > 2:
@@ -91,9 +116,9 @@ def show_user_search(request, first_name, last_name, username, email):
     options = User.objects.all()
 
     if "first_name" in terms:
-        options = options.filter(first_name = terms["first_name"])
+        options = options.filter(first_name__istartswith = terms["first_name"])
     if "last_name" in terms:
-        options = options.filter(last_name = terms["last_name"])
+        options = options.filter(last_name__istartswith = terms["last_name"])
     if "username" in terms:
         options = options.filter(username = terms["username"])
     if "email" in terms:
@@ -104,3 +129,51 @@ def show_user_search(request, first_name, last_name, username, email):
     }
 
     return render(request, "list_friend_search.html", context)
+
+
+def add_friend(request, user_id):
+    potential_friend = User.objects.get(id=user_id)
+    logged_in_user = User.objects.get(id=request.session["user_id"])
+
+    logged_in_user.added_friends.add(potential_friend)
+    logged_in_user.save()
+
+    return redirect(f"/users/{user_id}")
+
+
+def accept_friend(request, user_id):
+    potential_friend = User.objects.get(id=user_id)
+    logged_in_user = User.objects.get(id=request.session["user_id"])
+
+    logged_in_user.added_friends.add(potential_friend)
+    logged_in_user.friends.add(potential_friend)
+    potential_friend.friends.add(logged_in_user)
+    logged_in_user.save()
+    potential_friend.save()
+    
+    return redirect(f"/users/{user_id}")
+
+
+def ignore_friend(request, user_id):
+    potential_friend = User.objects.get(id=user_id)
+    logged_in_user = User.objects.get(id=request.session["user_id"])
+
+    potential_friend.added_friends.remove(logged_in_user)
+    logged_in_user.save()
+
+    return redirect(f"/users/{user_id}")
+
+
+def remove_friend(request, user_id):
+    enemy = User.objects.get(id=user_id)
+    logged_in_user = User.objects.get(id=request.session["user_id"])
+
+    enemy.friends.remove(logged_in_user)
+    logged_in_user.friends.remove(enemy)
+    logged_in_user.added_friends.remove(enemy)
+    logged_in_user.added_by.remove(enemy)
+    logged_in_user.save()
+    enemy.save()
+
+    return redirect(f"/users/{user_id}")
+    
