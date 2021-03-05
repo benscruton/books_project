@@ -27,7 +27,7 @@
         <form action="/shelf/create" method="POST">
             {% csrf_token %}
             <div class="input-field">
-                <input  type="text" placeholder="Add New Shelf Here...">
+                <input  type="text" placeholder="Add New Shelf Here..." name="name">
                 <button class="btn waves-effect waves-light" type="submit" name="action">Submit<i class="material-icons right">send</i></button>
                 {% comment %} <input type="submit" class="btn"></p> {% endcomment %}
             </div>
