@@ -1,97 +1,91 @@
 {% extends "base.html" %}
 {% block content %}
 
+<div class="container">
+
+    <h2 class="center-align">
+        {% if user.id == request.session.user_id %}
+            Your
+        {% else %}
+            {{user.first_name}} {{user.last_name}}'s 
+        {% endif %}
+    Friends</h2>
 
 
-{% if user.id == request.session.user_id %}
-    <h1>Your Friends</h1>
-{% else %}
-    <h1>{{user.first_name}} {{user.last_name}}'s Friends</h1>
+    {% if messages %}
+        {% for message in messages %}
+            <p{% if message.tags %} class="{{message.tags}}"{% endif %}>
+                {{message}}
+            </p>
+        {% endfor %}
     {% endif %}
 
 
-{% if messages %}
-    {% for message in messages %}
-        <p{% if message.tags %} class="{{message.tags}}"{% endif %}>
-            {{message}}
-        </p>
-    {% endfor %}
-{% endif %}
 
-
-
-<section>
     <div class="row">
-        <h2>Your Friends:</h2>
-    </div>
 
-    <aside id="search_new" class="border">
-        <h2>Find Users By:</h2>
-        <form method="POST" action="/users/search">
+        <aside id="search_new" class="col s3">
+            <h4>Find Users By:</h4>
+            <form method="POST" action="/users/search">
+            {% csrf_token %}
+                <div><input type="text" placeholder="First Name..." name="first_name"></div>
+
+                <div><input type="text" placeholder="Last Name..." name="last_name"></div>
+
+                <div><input type="text" placeholder="Username..." name="username"></div>
+
+                <div><input type="email" placeholder="Email..." name="email"></div>
+
+                <button type="submit" class="btn waves-effect waves-light">
+                    Search
+                    <i class="material-icons right">search</i>
+                </button>
+            </form>
+
+        </aside>
+
+        <form class="col s9 pull-3" id="friend_search" method="POST" action="/users/{{user.id}}/friends/search">
         {% csrf_token %}
-            <div><input type="text" placeholder="First Name..." name="first_name"></div>
-
-            <div><input type="text" placeholder="Last Name..." name="last_name"></div>
-
-            <div><input type="text" placeholder="Username..." name="username"></div>
-
-            <div><input type="email" placeholder="Email..." name="email"></div>
-
-            <button type="submit" class="btn waves-effect waves-light">
-                Search
-                <i class="material-icons right">search</i>
-            </button>
+            <!-- <h4>Search Friends:</h4> -->
+            <input type="text"  name="friend_search" id="friend_search" placeholder = "Search friends...">
+        <input type="submit" hidden>
         </form>
 
-    </aside>
-
-    <form id="friend_search" method="POST" action="/users/{{user.id}}/friends/search">
-    {% csrf_token %}
-        <label for="friend_search">Search Friends...</label>
-        <input type="text"  name="friend_search" id="friend_search">
-    <input type="submit" hidden>
-    </form>
-
-    
-    
-        {% if user.friends.count == 0 %}
-        <div class="friend_box">You don't have any friends :(</div>
         
-        {% else %}
-        {% for friend in user.friends.all %}
-
-
-
-
-
-        <div class="friend_box">
-            <a href="/users/{{friend.id}}">{{friend.first_name}} {{friend.last_name}}</a>
-            <p>Last activity:</p>
-
-        </div>
-
-
-
-
-
-
-
-        {% endfor %}
         
+            {% if user.friends.count == 0 %}
+            <div class="card col s4">
+                <div class="card-content">
+                    <p>You don't have any friends :(</p>
+                </div>
+            </div>
+            
+            {% else %}
+            {% for friend in user.friends.all %}
+
+            <div class="card col s3 offset-s1">
+                <div class="card-content">
+                    <p><a href="/users/{{friend.id}}">{{friend.first_name}} {{friend.last_name}}</a><p>
+                    <p>Last activity:</p>
+                </div>
+            </div>
+
+            {% endfor %}
+            
 
 
 
 
 
 
-        {% endif %}
-    </ul>
+            {% endif %}
+        </ul>
 
 
 
 
 
-</section>
+    </div>
 
 
 
@@ -102,5 +96,5 @@
 
 
 
-
+</div>
 {% endblock %}

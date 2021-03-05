@@ -23,7 +23,7 @@
                     {% if request.session.user_id %}
                         <li><a href="/" class="left brand-logo">&nbsp;&nbsp;Welcome, {{request.session.first_name }} {{ request.session.last_name }}!</a></li>
                     {% else %}
-                        <li><a href="/" class="left brand-logo">&nbsp;&nbsp;Home</a></li>
+                        <li><a href="/login" class="left brand-logo">&nbsp;&nbsp;Log In or Register</a></li>
                     {% endif %}
                     </ul>
                     <ul class="right">
@@ -31,7 +31,7 @@
                         <li><a href="{% url 'dashboard' %}">Books Dashboard</a></li>
                         <li><a href="/users/{{request.session.user_id}}/shelves">Shelves</a></li>
                         <li><a href="/users/{{request.session.user_id}}">Profile</a></li>
-                        <li>Wall</li>
+                        <li><a href="/users/{{request.session.user_id}}/wall">Wall</a></li>
                         <li><a href="/users/{{request.session.user_id}}/friends">Friends</a></li>
                         <li><a href="/login/users/logout">Log out</a></li>
                     </ul>
@@ -40,17 +40,18 @@
             </div>
         </nav>
     </header>
-    <main class="container">
+    <main>
+
         
         {% if new_requests %}
             {% for potential_friend in new_requests %}
                 <p>You have a new friend request from <a href="/users/{{potential_friend.id}}">{{potential_friend.first_name}} {{potential_friend.last_name}}</a>!</p>
                 <div>
                     <form style="display: inline;" action="/users/{{potential_friend.id}}/accept_friend">
-                        <button>Accept</button>
+                        <button class="btn">Accept</button>
                     </form>
                     <form style="display: inline;" action="/users/{{potential_friend.id}}/ignore_friend">
-                        <button>Ignore</button>
+                        <button class="btn red darken-3">Ignore</button>
                     </form>
                 </div>
 
@@ -66,6 +67,8 @@
 
         {% endblock %}
     </main>
+    <br>
+    <br>
     <footer class="page-footer light-blue">
         <div class="right">All Rights Reserved, &copy; 2021 Dojo Reads &nbsp;</div>
     </footer>

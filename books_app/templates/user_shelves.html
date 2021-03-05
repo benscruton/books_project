@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% block content %}
+<div class="container">
 
 
     <h3 class="center-align">{% if user.id == request.session.user_id %}Your{% else %}{{user.first_name}}'s{% endif %} Shelves</h3>
@@ -67,4 +68,8 @@
     </section>
     {% endif %}
 
+
+
+
+</div>
 {% endblock %}

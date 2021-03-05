@@ -1,84 +1,88 @@
 {% extends "base.html" %}
 {% block content %}
 
-<h1>Your Profile</h1>
+<!-- <h3 class="center-align">Your Profile</h3> -->
+<br>
+<div class="row">
 
-<aside id="shelves">
-    <h2>Your Shelves:</h2>
-    <ul id="shelflist">
-    {% for shelf in user.shelves.all %}
-        <li><a href="/shelves/{{shelf.id}}">{{shelf.name}}</a></li>
-    {% endfor %}
-</aside>
+    <aside class="col s3 green lighten-3" id="shelves">
+        <h4>Your Shelves:</h4>
+        {% for shelf in user.shelves.all %}
+            <div class="card green lighten-4">
+                <div class="card-content">
+                    <p><a href="/shelves/{{shelf.id}}">{{shelf.name}}</a></p>
+                </div>
+            </div>
+        {% endfor %}
+    </aside>
 
 
-<aside id="friends">
-    <h2>Your Friends:</h2>
+    <section class="col s6">
+        <h4 class="center-align">Your Wall</h4>
 
-    <ul id="friendlist">
-        {% if user.friends.count == 0 %}
-        <li>You don't have any friends :(</li>
+        <div class="card">
+            <form method="POST" action="/users/{{user.id}}/add_wallpost" class="card-content">
+                {% csrf_token %}
+                <p><label for="add_post">Write on {% if user.id == request.session.user_id %}your{% else %}{{user.first_name}}'s{% endif%} wall:</label></p>
+                <textarea class="wallpost" rows=6 cols=40 name="add_post" id="add_post"></textarea>
+                <input class="btn" type="submit" value="Post to wall">
+            </form>
+        </div>
         
-        {% else %}
-            {% for friend in user.friends.all %}
-            <li><a href="/users/{{friend.id}}">{{friend.first_name}} {{friend.last_name}}</a></li>
-            {% endfor %}
-        {% endif %}
-    </ul>
-</aside>
-    
+        {% for post in wallposts %}
+        <div class="card">
+            <div class="card-content">
+                <h5><a href="/users/{{post.poster.id}}">{{post.poster.first_name}} {{post.poster.last_name}}</a>, at {{post.created_at}}</h5>
+                <p style="margin-left: 25px;">{{post.contents}}</p>
+                
+                <p style="margin-left: 25px;"><a href="/posts/{{post.id}}/delete">Delete this post</a></p>
 
-
-<section>
-    <h2>Wall</h2>
-
-    <div class="border">
-        <form method="POST" action="/users/{{user.id}}/add_wallpost">
-        {% csrf_token %}
-            <p><label for="add_post">Write on {% if user.id == request.session.user_id %}your{% else %}{{user.first_name}}'s{% endif%} wall:</label></p>
-            <textarea class="wallpost" rows=6 cols=40 name="add_post" id="add_post"></textarea>
-            <input type="submit" value="Post to wall">
-        </form>
-    </div>
-    
-    {% for post in wallposts %}
-    <div class="border">
-        <h4><a href="/users/{{post.poster.id}}">{{post.poster.first_name}} {{post.poster.last_name}}</a>, at {{post.created_at}}</h4>
-        <p class="wallpost">{{post.contents}}</p>
-        
-        <p><a href="/posts/{{post.id}}/delete">Delete this post</a></p>
-
-
-        {% for comment in post.comments.all %}
-        <div class="border">
-            <h4><a href="/users/{{comment.commenter.id}}">{{comment.commenter.first_name}} {{comment.commenter.last_name}}</a>, at {{comment.created_at}}</h4>
-            <p class="comment">{{comment.contents}}</p>
-
-                <p><a href="/comments/{{comment.id}}/delete">Delete this comment</a></p>
+                
+                {% for comment in post.comments.all %}
+                <div class="card">
+                    <div class="card-content">
+                        <h5><a href="/users/{{comment.commenter.id}}">{{comment.commenter.first_name}} {{comment.commenter.last_name}}</a>, at {{comment.created_at}}</h5>
+                        <p style="margin-left: 25px;">{{comment.contents}}</p>
+                        
+                        <p style="margin-left: 25px;"><a href="/comments/{{comment.id}}/delete">Delete this comment</a></p>
+                    </div>
+                </div>
+                {% endfor %}
+                
+                <div class="card">
+                    <form method="POST" action="/posts/{{post.id}}/add_comment" class="card-content">
+                        {% csrf_token %}
+                        <p><label for="comment">Write a comment:</label></p>
+                        <textarea class="comment" rows=4 cols=30 name="comment" id="comment"></textarea>
+                        <input class="btn" type="submit" value="Comment">
+                    </form>
+                </div>
+            </div>
         </div>
         {% endfor %}
 
-        <div class="border">
-            <form method="POST" action="/posts/{{post.id}}/add_comment">
-            {% csrf_token %}
-                <p><label for="comment">Write a comment:</label></p>
-                <textarea class="comment" rows=4 cols=30 name="comment" id="comment"></textarea>
-                <input type="submit" value="Comment">
-            </form>
-        </div>
-    </div>
-    {% endfor %}
-
-    </form>
+        </section>
 
 
 
-</section>
+        <aside class="col s3 indigo lighten-3" id="friends">
+            <h4>Your Friends:</h4>
 
+            {% if user.friends.count == 0 %}
+            <li>You don't have any friends :(</li>
+            
+            {% else %}
+                {% for friend in user.friends.all %}
+                <div class="card indigo lighten-4">
+                    <div class="card-content">
+                        <p><a href="/users/{{friend.id}}">{{friend.first_name}} {{friend.last_name}}</a></p>
+                    </div>
+                </div>
+                {% endfor %}
+            {% endif %}
+        </aside>
 
-
-
-
+</div>
 
 
 

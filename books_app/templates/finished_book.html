@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container">
+
+
+    <h3 class="center-align"></h3>
+
+    <div class="card">
+        <div class="card-content">
+
+            <h4 class="center-align">You finished {{book.title}}!</h4>
+            <p class="center-align">by {{book.author_firstname}} {{book.author_lastname}}</p>
+            <br>
+            <p>That's awesome -- good work!</p>
+            <p>Would you like to add a post to your wall, so you can talk about it with your friends?</p>
+            <br>
+            
+
+            <div class="container">   
+                <form style="display: inline;" method="POST" action="/users/{{request.session.user_id}}/add_wallpost">
+                {% csrf_token %}
+                    <textarea name="add_post" id="add_post">I finished {{book.title}}, by {{book.author_firstname}} {{book.author_lastname}}!&#13;&#10;Have you read it?  Are you curious about it?  Let me know if you have any thoughts or questions!</textarea>
+                    <button type="submit" class="btn">Yes, post!</button>
+                </form>
+                &nbsp; &nbsp;
+                <form style="display: inline;" action="/shelves/{{shelf_id}}">
+                    <button class="btn red darken-3">
+                        Not now!
+                    </button>
+                </form>
+            </div>
+
+
+        </div>
+    </div>
+
+
+
+
+</div>
+{% endblock %}

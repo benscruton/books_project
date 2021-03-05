@@ -6,6 +6,9 @@ from django.contrib import messages
 # Create your views here.
 def check_friend_requests(data):
     # Call this function from any function that renders a page, if you want friend requests to show up on that page.
+    if "user_id" not in data:
+        return []
+
     this_user = User.objects.get(id=data["user_id"])
     new_requests = []
     
@@ -18,8 +21,13 @@ def check_friend_requests(data):
 
 
 def index(request):
+    if "user_id" in request.session:
+        user = User.objects.get(id=request.session["user_id"])
+    else:
+        user = None
+
     context = {
-        "user": User.objects.get(id=request.session['user_id']),
+        "user": user,
         "new_requests": check_friend_requests(request.session),
     }
     return render(request, "dashboard.html", context)
@@ -175,10 +183,23 @@ def add_to_shelf(request, book_id):
     this_shelf.books.add(Book.objects.get(id=book_id))
     this_shelf.save()
     if this_shelf.name == "Finished":
-        print("*"*80)
-        print("Finished a book, eh?")
+        return redirect(f"/books/{book_id}/finished")
 
     return redirect(f'/shelves/{this_shelf.id}')
+
+
+def finished_book(request, book_id):
+    this_book = Book.objects.get(id=book_id)
+    this_user = User.objects.get(id=request.session["user_id"])
+    this_shelf = Shelf.objects.get(owner = this_user, name="Finished")
+
+    context = {
+        "book": this_book,
+        "shelf_id": this_shelf.id,
+        "new_requests": check_friend_requests(request.session),
+    }
+
+    return render(request, "finished_book.html", context)
 
 
 def remove_from_shelf(request, book_id, shelf_id):
@@ -225,9 +246,11 @@ def view_user(request, user_id):
     this_user = User.objects.get(id=user_id)
     logged_in_user = User.objects.get(id=request.session["user_id"])
 
+    all_wallposts = WallPost.objects.filter(wall = this_user).order_by("-created_at")
+
     context = {
         "user": this_user,
-        "wallposts": WallPost.objects.filter(wall = this_user).order_by("-created_at"),
+        "wallposts": all_wallposts[:5],
         "new_requests": check_friend_requests(request.session),
     }
 
@@ -249,7 +272,7 @@ def post_on_wall(request, user_id):
         poster = User.objects.get(id = request.session["user_id"]),
         wall = User.objects.get(id = user_id)
     )
-    return redirect(f"/users/{user_id}")
+    return redirect(f"/users/{user_id}/wall")
 
 
 def comment_on_post(request, post_id):
@@ -258,7 +281,7 @@ def comment_on_post(request, post_id):
         commenter = User.objects.get(id = request.session["user_id"]),
         parent = WallPost.objects.get(id = post_id)
     )
-    return redirect(f"/users/{this_comment.parent.wall.id}")
+    return redirect(f"/users/{this_comment.parent.wall.id}/wall")
 
 
 def delete_post(request, post_id):
@@ -278,6 +301,19 @@ def delete_comment(request, comment_id):
     this_comment.delete()
 
     return redirect(f"/users/{redirect_id}")
+
+
+def show_user_wall(request, user_id):
+    this_user = User.objects.get(id=user_id)
+
+    context = {
+        "user": this_user,
+        "logged_in_user": User.objects.get(id=request.session["user_id"]),
+        "wallposts": WallPost.objects.filter(wall = this_user).order_by("-created_at"),
+        "new_requests": check_friend_requests(request.session),
+    }
+
+    return render(request, "wall.html", context)
 
 
 # -------- USER FNS: FRIENDS AND SEARCHES --------

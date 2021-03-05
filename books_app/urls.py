@@ -14,8 +14,12 @@ urlpatterns = [
     path("books/create", views.create_book, name="create_book"),
     
     path("books/<int:book_id>", views.book_detail, name="book_detail"),
+
+    path("books/<int:book_id>/finished", views.finished_book),
     
     path("users/<int:user_id>", views.view_user),
+
+    path("users/<int:user_id>/wall", views.show_user_wall),
     
     path("users/<int:user_id>/add_wallpost", views.post_on_wall),
     

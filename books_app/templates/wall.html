@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+{% block content %}
+
+
+<div class="container">
+    
+    <h3 class="center-align">
+        {% if user.id == request.session.user_id %}
+            Your
+        {% else %}
+            {{user.first_name}}'s
+        {% endif %}
+        Wall
+    </h3>
+
+
+    {% if logged_in_user in user.friends.all or user.id == request.session.user_id %}
+
+        <div class="card">
+            <form method="POST" action="/users/{{user.id}}/add_wallpost" class="card-content">
+                {% csrf_token %}
+                <p><label for="add_post">Write on {% if user.id == request.session.user_id %}your{% else %}{{user.first_name}}'s{% endif%} wall:</label></p>
+                <textarea class="wallpost" rows=6 cols=40 name="add_post" id="add_post"></textarea>
+                <input class="btn" type="submit" value="Post to wall">
+            </form>
+        </div>
+        
+        {% for post in wallposts %}
+        <div class="card">
+            <div class="card-content">
+                <h5><a href="/users/{{post.poster.id}}">{{post.poster.first_name}} {{post.poster.last_name}}</a>, at {{post.created_at}}</h5>
+                <p class="wallpost" style="margin-left: 25px;">{{post.contents}}</p>
+                
+                {% if post.poster.id == request.session.user_id or post.wall.id == request.session.user_id %}
+                    <p style="margin-left: 25px;">
+                        <a href="/posts/{{post.id}}/delete">Delete this post</a>
+                    </p>
+                {% endif %}
+
+
+                {% for comment in post.comments.all %}
+                <div class="card">
+                    <div class="card-content">
+                        <h5><a href="/users/{{comment.commenter.id}}">{{comment.commenter.first_name}} {{comment.commenter.last_name}}</a>, at {{comment.created_at}}</h5>
+                        <p class="comment" style="margin-left: 25px;">{{comment.contents}}</p>
+
+                        {% if comment.commenter.id == request.session.user_id or post.wall.id == request.session.user_id %}
+                            <p style="margin-left: 25px;">
+                                <a href="/comments/{{comment.id}}/delete">Delete this comment</a>
+                            </p>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+
+                <div class="card">
+                    <form method="POST" action="/posts/{{post.id}}/add_comment" class="card-content">
+                    {% csrf_token %}
+                        <p><label for="comment">Write a comment:</label></p>
+                        <textarea class="comment" rows=4 cols=30 name="comment" id="comment"></textarea>
+                        <input type="submit" class="btn" value="Comment">
+                    </form>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+
+
+
+        </form>
+
+    {% else %}
+        <p> Add this user as a friend to see their wall!</p>
+
+    {% endif %}
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+{% endblock %}
