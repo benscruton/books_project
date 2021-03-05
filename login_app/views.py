@@ -35,22 +35,26 @@ def register_new_user(request):
 
     Shelf.objects.create(
         name = "Reading",
-        owner = this_user
+        owner = this_user,
+        fixed = True
     )
 
     Shelf.objects.create(
         name = "Finished",
-        owner = this_user
+        owner = this_user,
+        fixed = True
     )
 
     Shelf.objects.create(
         name = "To Read",
-        owner = this_user
+        owner = this_user,
+        fixed = True
     )
 
     Shelf.objects.create(
         name = "Recommended",
-        owner = this_user
+        owner = this_user,
+        fixed = True
     )
 
     messages.success(request, "Successfully created account!  Please log in:")

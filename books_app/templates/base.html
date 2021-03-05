@@ -21,7 +21,7 @@
             <div class="nav-wrapper light-blue">
                 <ul>
                     {% if request.session.user_id %}
-                        <li><a href="/" class="left brand-logo">&nbsp;&nbsp;{{ user.first_name }} {{ user.last_name }}'s Home</a></li>
+                        <li><a href="/" class="left brand-logo">&nbsp;&nbsp;Welcome, {{request.session.first_name }} {{ request.session.last_name }}!</a></li>
                     {% else %}
                         <li><a href="/" class="left brand-logo">&nbsp;&nbsp;Home</a></li>
                     {% endif %}
@@ -29,10 +29,10 @@
                     <ul class="right">
                     {% if request.session.user_id %}
                         <li><a href="{% url 'dashboard' %}">Books Dashboard</a></li>
-                        <li><a href="{% url 'user_shelves' %}">Shelves</a></li>
+                        <li><a href="/users/{{request.session.user_id}}/shelves">Shelves</a></li>
                         <li><a href="/users/{{request.session.user_id}}">Profile</a></li>
                         <li>Wall</li>
-                        <li>Friends</li>
+                        <li><a href="/users/{{request.session.user_id}}/friends">Friends</a></li>
                         <li><a href="/login/users/logout">Log out</a></li>
                     </ul>
                     {% endif %}
@@ -42,6 +42,12 @@
     </header>
     <main class="container">
         {% block content %}
+
+
+
+
+
+
         {% endblock %}
     </main>
     <footer class="page-footer light-blue">

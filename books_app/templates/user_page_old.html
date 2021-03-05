@@ -1,9 +1,48 @@
-{% extends "base.html" %}
-{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{user.first_name}} {{user.last_name}}'s Profile</title>
+    <style>
+        #wrapper{
+            background-color: #a8eba8
+        }
+        .border{
+            border: 1px solid black;
+            display: inline-block;
+            width: 60%;
+            padding: 0 10px 10px;
+            margin-bottom: 5px;
+        }
+        .inline{
+            display: inline;
+        }
+        form{
+            display: inline;
+        }
+    </style>
+</head>
+<body>
+<div id="wrapper">
+    <header>
+        <p>(Hi, {{request.session.first_name}}!)</p>
 
-<h1>{{user.first_name}} {{user.last_name}}'s Profile</h1>
-
-{% if user in logged_in_user.friends.all %}
+                    
+        
+        <ul id="navbar">
+            <li><a href="{% url 'dashboard' %}">Books Dashboard</a></li>
+            <li><a href="{% url 'user_shelves' %}">Shelves</a></li>
+            <li><a href="/users/{{request.session.user_id}}">Profile</a></li>
+            <li>Wall</li>
+            <li><a href="/users/{{request.session.user_id}}/friends">Friends</a></li>
+            <li><a href="/login/users/logout">Log out</a></li>
+        </ul>
+        
+        <h1>{{user.first_name}} {{user.last_name}}'s Profile</h1>
+        
+        {% if user in logged_in_user.friends.all %}
             <p class="inline">You are friends!</p>
             <form action="/users/{{user.id}}/remove_friend">
                 <button>Unfriend</button>
@@ -32,7 +71,40 @@
             {% endif %}
         {% endif %}
 
-        {% if user in logged_in_user.friends.all %}
+
+        {% if new_requests %}
+            {% for potential_friend in new_requests %}
+                    
+                {% if potential_friend.id != user.id %}
+            
+                    <p>You have a new friend request from <a href="/users/{{potential_friend.id}}">{{potential_friend.first_name}} {{potential_friend.last_name}}</a>!</p>
+                    <div>
+                        <form style="display: inline;" action="/users/{{potential_friend.id}}/accept_friend">
+                            <button>Accept</button>
+                        </form>
+                        <form style="display: inline;" action="/users/{{potential_friend.id}}/ignore_friend">
+                            <button>Ignore</button>
+                        </form>
+                    </div>
+
+                {% endif %}
+
+            {% endfor %}
+
+        {% endif %}
+
+
+
+    </header>
+
+
+
+
+
+
+
+
+    {% if user in logged_in_user.friends.all %}
 
         <aside id="shelves">
             <h2>{{user.first_name}}'s Shelves:</h2>
@@ -46,7 +118,7 @@
 
 
 
-    <aside id="friends">
+    <aside>
     {% if user in logged_in_user.friends.all %}
 
         <h2>{{user.first_name}}'s Friends:</h2>
@@ -84,7 +156,7 @@
 
 
 
-    <section>
+    <main>
 
     {% if user in logged_in_user.friends.all %}
         <h2>Wall</h2>
@@ -138,20 +210,8 @@
         <p> Add this user as a friend to see more about them!</p>
 
     {% endif %}
-    </section>
+    </main>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-{% endblock %}
+</div>
+</body>
+</html>

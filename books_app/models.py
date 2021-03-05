@@ -18,6 +18,7 @@ class Shelf(models.Model):
     name = models.CharField(max_length = 255)
     books = models.ManyToManyField(Book, related_name = "shelves")
     owner = models.ForeignKey(User, related_name = "shelves", on_delete = models.CASCADE)
+    fixed = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now = True)
 

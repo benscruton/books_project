@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        #wrapper{
+            background-color: mistyrose;
+        }
+        .border{
+            border: 1px solid black;
+            display: inline-block;
+            width: 60%;
+            padding: 0 10px 10px;
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+<div id="wrapper">
+    <header>
+        <p>(Logged in as {{request.session.first_name}} {{request.session.last_name}})</p>
+        {% if user.id == request.session.user_id %}
+            <h1>Your Friends</h1>
+        {% else %}
+            <h1>{{user.first_name}} {{user.last_name}}'s Friends</h1>
+        {% endif %}
+
+        <ul id="navbar">
+            <li>Books Dashboard</li>
+            <li>Shelves</li>
+            <li><a href="/users/{{request.session.user_id}}">Profile</a></li>
+            <li>Wall</li>
+            <li><a href="/users/{{request.session.user_id}}/friends">Friends</a></li>
+            <li><a href="/login/users/logout">Log out</a></li>
+        </ul>
+
+        {% if new_requests %}
+            {% for potential_friend in new_requests %}
+                <p>You have a new friend request from <a href="/users/{{potential_friend.id}}">{{potential_friend.first_name}} {{potential_friend.last_name}}</a>!</p>
+                <div>
+                    <form style="display: inline;" action="/users/{{potential_friend.id}}/accept_friend">
+                        <button>Accept</button>
+                    </form>
+                    <form style="display: inline;" action="/users/{{potential_friend.id}}/ignore_friend">
+                        <button>Ignore</button>
+                    </form>
+                </div>
+
+            {% endfor %}
+        {% endif %}
+
+
+
+
+        {% if messages %}
+            {% for message in messages %}
+                <p{% if message.tags %} class="{{message.tags}}"{% endif %}>{{message}}</p>
+            {% endfor %}
+        {% endif %}
+
+    </header>
+
+    <main>
+        <div class="row">
+            <h2>Your Friends:</h2>
+        </div>
+
+        <aside id="search_new" class="border">
+            <h2>Find Users By:</h2>
+            <form method="POST" action="/users/search">
+            {% csrf_token %}
+                <div><input type="text" placeholder="First Name..." name="first_name"></div>
+
+                <div><input type="text" placeholder="Last Name..." name="last_name"></div>
+
+                <div><input type="text" placeholder="Username..." name="username"></div>
+
+                <div><input type="email" placeholder="Email..." name="email"></div>
+
+                <input type="submit" hidden>
+            </form>
+
+        </aside>
+
+        <form id="friend_search" method="POST" action="/users/{{user.id}}/friends/search">
+        {% csrf_token %}
+            <label for="friend_search">Search Friends...</label>
+            <input type="text"  name="friend_search" id="friend_search">
+        <input type="submit" hidden>
+        </form>
+
+        
+        
+            {% if user.friends.count == 0 %}
+            <div class="friend_box">You don't have any friends :(</div>
+            
+            {% else %}
+            {% for friend in user.friends.all %}
+
+
+
+
+
+            <div class="friend_box">
+                <a href="/users/{{friend.id}}">{{friend.first_name}} {{friend.last_name}}</a>
+                <p>Last activity:</p>
+
+            </div>
+
+
+
+
+
+
+
+            {% endfor %}
+            
+
+
+
+
+
+
+            {% endif %}
+        </ul>
+
+
+
+
+
+    </main>
+
+</div>
+</body>
+</html>

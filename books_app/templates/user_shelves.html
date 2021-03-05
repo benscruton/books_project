@@ -1,28 +1,46 @@
 {% extends "base.html" %}
 {% block content %}
 
-<h3 class="center-align">{{user.first_name}}'s Shelves</h3>
+
+    <h3 class="center-align">{% if user.id == request.session.user_id %}Your{% else %}{{user.first_name}}'s{% endif %} Shelves</h3>
 
     <table class="highlight">
         <thead>
             <th>Name</th>
             <th>Last Book</th>
             <th>Date</th>
+            <th>Actions</th>
         </thead>
         <tbody>
             <tr>
-                {% for shelf in shelves.all %}
-                <td><a href="{% url 'shelf_id' shelf.id %}">{{ shelf.name }}</a></td>
+                {% for shelf in user.shelves.all %}
+                <td>
+                    {% if editing and edit_shelf_id == shelf.id %}
+                    <form method="POST" action="/shelves/{{shelf.id}}/update">
+                    {% csrf_token %}
+                        <input type="text" value="{{shelf.name}}" name="new_name">
+                        <input hidden type="submit">
+                    </form>
+
+                    {% else %}
+                    <a href="/shelf/{{shelf.id}}">{{ shelf.name }}</a>
+                    {% endif %}
+                </td>
                 <td>{{ shelf.books.last.title }}</td>
                 <td>{{ shelf.created_at }}</td>
                 <td>
-                    {% comment %} <a href="/shows/{{show.id}}/edit">Edit</a> |
-                    <a href="/shows/{{show.id}}/delete">Delete</a> {% endcomment %}
+                {% if not shelf.fixed %}
+                    <a href="/shelves/{{shelf.id}}/edit">Edit</a> | 
+                    <a href="/shelves/{{shelf.id}}/delete">Delete</a>
+                {% endif %}
+
                 </td>
             </tr>
         </body>
         {% endfor %}        
     </table>
+
+    {% if not editing %}
     <section>
         <form action="/shelf/create" method="POST">
             {% csrf_token %}
@@ -33,5 +51,6 @@
             </div>
         </form>
     </section>
+    {% endif %}
 
 {% endblock %}

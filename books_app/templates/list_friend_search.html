@@ -1,83 +1,36 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <style>
-        #wrapper{
-            background-color: aliceblue;
-        }
-        .border{
-            border: 1px solid black;
-            display: inline-block;
-            width: 60%;
-            padding: 0 10px 10px;
-            margin-bottom: 5px;
-        }
-        .error{
-            font-weight: bold;
-            color: #b00;
-        }
-    </style>
-</head>
-<body>
-<div id="wrapper">
-    <header>
-        <p>(Logged in as {{request.session.first_name}} {{request.session.last_name}})</p>
-        <h1>Search For Friends</h1>
-
-        
-        <ul id="navbar">
-            <li>Books Dashboard</li>
-            <li>Shelves</li>
-            <li><a href="/users/{{request.session.user_id}}">Profile</a></li>
-            <li>Wall</li>
-            <li><a href="/users/{{request.session.user_id}}/friends">Friends</a></li>
-            <li><a href="/login/users/logout">Log out</a></li>
-        </ul>
-        
-        {% if messages %}
-            {% for message in messages %}
-                <p{% if message.tags %} class="{{message.tags}}"{% endif %}>{{message}}</p>
-            {% endfor %}
-        {% endif %}
-    </header>
-
-    <main class="border">
-        {% if options.count > 0 %}
-            <h2>Search Results:</h2>
-            <ul>
-                {% for user in options %}
-                <li><a href="/users/{{user.id}}">{{user.first_name}} {{user.last_name}}</a></li>
-                {% endfor %}
-            </ul>
-        {% else %}
-            <p>No matches found!</p>
-        {% endif %}
+{% extends "base.html" %}
+{% block content %}
 
 
-    </main>
+<h1>Search For Friends</h1>
 
-    <aside class="border">
-        <h2>Search Again:</h2>
-        <form method="POST" action="/users/search">
-            {% csrf_token %}
-                <input type="text" placeholder="First Name..." name="first_name">
-
-                <input type="text" placeholder="Last Name..." name="last_name">
-
-                <input type="text" placeholder="Username..." name="username">
-
-                <input type="email" placeholder="Email..." name="email">
-                <input type="submit" hidden>
-            </form>
-        </form>
-
-    </aside>
+{% if messages %}
+    {% for message in messages %}
+        <p{% if message.tags %} class="{{message.tags}}"{% endif %}>
+            {{message}}
+        </p>
+    {% endfor %}
+{% endif %}
 
 
-</div>
-</body>
-</html>
+{% if options.count > 0 %}
+    <h2>Search Results:</h2>
+    <ul>
+    {% for user in options %}
+        <li><a href="/users/{{user.id}}">{{user.first_name}} {{user.last_name}}</a></li>
+    {% endfor %}
+    </ul>
+    {% else %}
+        <p>No matches found!</p>
+    {% endif %}
+
+
+
+
+
+
+
+
+
+
+{% endblock %}
