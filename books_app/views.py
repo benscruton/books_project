@@ -20,6 +20,7 @@ def check_friend_requests(data):
 def index(request):
     context = {
         "user": User.objects.get(id=request.session['user_id']),
+        "new_requests": check_friend_requests(request.session),
     }
     return render(request, "dashboard.html", context)
 
@@ -29,7 +30,7 @@ def index(request):
 
 def add_book(request):
     context = {
-        'book' : Book.objects.all(),
+        "new_requests": check_friend_requests(request.session),
     }
     return render(request, "add_book.html", context)
 
@@ -51,7 +52,8 @@ def book_detail(request, book_id):
         'book': Book.objects.get(id=book_id),
         "user": User.objects.get(id=request.session['user_id']),
         "shelves": Shelf.objects.filter(owner=User.objects.get(id=request.session['user_id'])),
-        }
+        "new_requests": check_friend_requests(request.session),
+    }
     return render(request, "book_detail.html", context)
 
 
@@ -98,7 +100,8 @@ def show_book_search(request, title, first_name, last_name, isbn):
         options = options.filter(ISBN = terms["isbn"])
 
     context = {
-        "options": options
+        "options": options,
+        "new_requests": check_friend_requests(request.session),
     }
 
     return render(request, "list_book_search.html", context)
@@ -114,6 +117,7 @@ def user_shelves(request, user_id = "none"):
     context = {
         "user": User.objects.get(id=user_id),
         "editing": False,
+        "new_requests": check_friend_requests(request.session),
     }
     return render(request, "user_shelves.html", context)
 
@@ -122,7 +126,8 @@ def edit_shelf(request, shelf_id):
     context = {
         "user": User.objects.get(id=request.session["user_id"]),
         "editing": True,
-        "edit_shelf_id": shelf_id
+        "edit_shelf_id": shelf_id,
+        "new_requests": check_friend_requests(request.session),
     }
     return render(request, "user_shelves.html", context)
 
@@ -191,10 +196,24 @@ def shelf(request, shelf_id):
     context = {
     'shelf': shelf,
     "user": User.objects.get(id=request.session['user_id']),
-    "books" : shelf.books.all
+    "books" : shelf.books.all,
+    "new_requests": check_friend_requests(request.session),
     }
 
     return render(request, "shelf.html", context)
+
+
+def recommend_book(request, book_id):
+    this_book = Book.objects.get(id=book_id)
+    recommender = User.objects.get(id=request.session["user_id"])
+    recommendee = User.objects.get(id=request.POST["friend_id"])
+    appropriate_shelf = recommendee.shelves.get(name = "Recommended")
+    print(f"{recommender.first_name} wants to put {this_book.title} on {recommendee.first_name}'s {appropriate_shelf.name} shelf!")
+
+    appropriate_shelf.books.add(this_book)
+    appropriate_shelf.save()
+
+    return redirect(f"/shelves/{appropriate_shelf.id}")
 
 
 
@@ -203,15 +222,13 @@ def shelf(request, shelf_id):
 
 
 def view_user(request, user_id):
-    new_requests = check_friend_requests(request.session)
-
     this_user = User.objects.get(id=user_id)
     logged_in_user = User.objects.get(id=request.session["user_id"])
 
     context = {
         "user": this_user,
         "wallposts": WallPost.objects.filter(wall = this_user).order_by("-created_at"),
-        "new_requests": new_requests
+        "new_requests": check_friend_requests(request.session),
     }
 
     if user_id == request.session["user_id"]:
@@ -267,11 +284,9 @@ def delete_comment(request, comment_id):
 
 
 def show_friends(request, user_id):
-    new_requests = check_friend_requests(request.session)
-
     context = {
         "user": User.objects.get(id=user_id),
-        "new_requests": new_requests
+        "new_requests": check_friend_requests(request.session),
     }
 
     return render(request, "friends.html", context)
@@ -315,7 +330,8 @@ def show_user_search(request, first_name, last_name, username, email):
         options = options.filter(email = terms["email"])
 
     context = {
-        "options": options
+        "options": options,
+        "new_requests": check_friend_requests(request.session),
     }
 
     return render(request, "list_friend_search.html", context)
@@ -338,7 +354,8 @@ def search_friends(request, user_id):
         options = options.intersection(comb_options)
 
         context = {
-            "options": options
+            "options": options,
+            "new_requests": check_friend_requests(request.session),
         }
     return render(request, "list_friend_search.html", context)
     
@@ -389,4 +406,3 @@ def remove_friend(request, user_id):
     enemy.save()
 
     return redirect(f"/users/{user_id}")
-    

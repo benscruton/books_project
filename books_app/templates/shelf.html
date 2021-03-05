@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block content %}
 
-<h3>{{ shelf.name }}</h3>
+<h3>{% if shelf.owner.id == request.session.user_id %}Your{% else %}{{shelf.owner.first_name}}'s{% endif %} {{ shelf.name }} Shelf</h3>
 <div class="row1">
     <div class="col">
 
@@ -21,11 +21,15 @@
                     <p>By {{book.author_firstname}} {{book.author_lastname}}</p>
                     <p>Description: {{ book.description }}</p>
                     <p>Added On: {{ book.created_at }}</p>
-                    <form action="/book/{{book.id}}/shelves/{{shelf.id}}/remove">
-                        <button class="btn">
+                    <br>
+
+                    {% if shelf.owner.id == request.session.user_id %}
+                    <form action="/books/{{book.id}}/shelves/{{shelf.id}}/remove">
+                        <button class="btn red darken-3">
                             Remove from shelf
                         </button>
                     </form>
+                    {% endif %}
                 </div>
             </div>
         {% endfor %}
@@ -34,6 +38,7 @@
         
         <form action="/">
         <button class="btn waves-effect waves-light" type="submit" name="action">Find more books<i class="material-icons right">search</i></button>
+        <br><br>
     </div>
 </div>
 

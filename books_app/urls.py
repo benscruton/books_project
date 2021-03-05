@@ -51,8 +51,11 @@ urlpatterns = [
     path("shelves/create", views.create_shelf),
     
     path('book/<int:book_id>/shelf/add', views.add_to_shelf, name="add_to_shelf"),
+    path("books/<int:book_id>/shelf/add", views.add_to_shelf),
 
-    path("book/<int:book_id>/shelves/<int:shelf_id>/remove", views.remove_from_shelf),
+    path("books/<int:book_id>/recommend", views.recommend_book),
+
+    path("books/<int:book_id>/shelves/<int:shelf_id>/remove", views.remove_from_shelf),
     
     path('shelf/<int:shelf_id>', views.shelf, name="shelf_id"),
 

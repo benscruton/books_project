@@ -31,7 +31,7 @@
                     </form>
 
                     {% else %}
-                    <a href="/shelf/{{shelf.id}}">{{ shelf.name }}</a>
+                    <a href="/shelves/{{shelf.id}}">{{ shelf.name }}</a>
                     {% endif %}
                 </td>
                 <td>{{ shelf.books.last.title }}</td>
