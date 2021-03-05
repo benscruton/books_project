@@ -55,7 +55,7 @@ def book_detail(request, book_id):
     return render(request, "book_detail.html", context)
 
 
-def search_book(request, book_id):
+def search_book(request):
     title = request.POST["title"]
     first_name = request.POST["author_firstname"]
     last_name = request.POST["author_lastname"]
@@ -65,66 +65,45 @@ def search_book(request, book_id):
 
 
 def show_book_search(request, title, first_name, last_name, isbn):
+    terms = {}
 
-    # terms = request.POST["friend_search"].split()
+    if len(title) > 2:
+        terms["title"] = title[2:]
+    if len(first_name) > 2:
+        terms["first_name"] = first_name[2:]
+    if len(last_name) > 2:
+        terms["last_name"] = last_name[2:]
+    if len(isbn) > 2:
+        terms["isbn"] = isbn[2:]
 
-    # if len(terms) <= 0:
-    #     messages.error(request, "Please enter at least one character to search!")
-    #     return redirect(f"/users/{request.session['user_id']}/friends")
-    
-    # all_options = User.objects.get(id=user_id).friends.all()
-    # options = User.objects.get(id=user_id).friends.all()
+    if terms == {}:
+        messages.error(request, "Please enter at least one search term!")
+        return redirect("/")
 
-    # for i in range(len(terms)):
-    #     f_options = all_options.filter(first_name__istartswith = terms[i])
-    #     l_options = all_options.filter(last_name__istartswith = terms[i])
-    #     comb_options = f_options.union(l_options)
-    #     options = options.intersection(comb_options)
+    options = Book.objects.all()
 
-    #     context = {
-    #         "options": options
-    #     }
-    # return render(request, "list_friend_search.html", context)
+    if "title" in terms:
+        title_terms = terms["title"].split()
 
+        for i in range(len(title_terms)):
+            options = options.filter(title__icontains = title_terms[i])
 
-    # terms = {}
+    if "first_name" in terms:
+        options = options.filter(author_firstname__istartswith = terms["first_name"])
 
-    # if len(first_name) > 2:
-    #     terms["first_name"] = first_name[2:]
-    # if len(last_name) > 2:
-    #     terms["last_name"] = last_name[2:]
-    # if len(username) > 2:
-    #     terms["username"] = username[2:]
-    # if len(email) > 2:
-    #     terms["email"] = email[2:]
+    if "last_name" in terms:
+        options = options.filter(author_lastname__istartswith = terms["last_name"])
 
-    # if terms == {}:
-    #     messages.error(request, "Please enter at least one search term!")
-    #     return render(request, "list_friend_search.html")
+    if "isbn" in terms:
+        options = options.filter(ISBN = terms["isbn"])
 
-    # options = User.objects.all()
+    context = {
+        "options": options
+    }
 
-    # if "first_name" in terms:
-    #     options = options.filter(first_name__istartswith = terms["first_name"])
-    # if "last_name" in terms:
-    #     options = options.filter(last_name__istartswith = terms["last_name"])
-    # if "username" in terms:
-    #     options = options.filter(username = terms["username"])
-    # if "email" in terms:
-    #     options = options.filter(email = terms["email"])
-
-    # context = {
-    #     "options": options
-    # }
-
-    # return render(request, "list_friend_search.html", context)
+    return render(request, "list_book_search.html", context)
 
     
-    
-    # title_terms = request.POST[
-
-    # return redirect(f"/books/{book_id}")
-    pass
 
 # -------- ALL THE SHELF FUNCTIONS --------
 
@@ -132,24 +111,16 @@ def user_shelves(request, user_id = "none"):
     if user_id == "none":
         user_id = request.session["user_id"]
 
-    user = User.objects.get(id=user_id)
-    fixed_shelves = ["Reading", "Finished", "To Read", "Recommended"]
-
     context = {
-        "user": user,
-        "fixed_shelves": fixed_shelves,
+        "user": User.objects.get(id=user_id),
         "editing": False,
     }
     return render(request, "user_shelves.html", context)
 
 
 def edit_shelf(request, shelf_id):
-    # this_shelf = Shelf.objects.get(id=shelf_id)
-    fixed_shelves = ["Reading", "Finished", "To Read", "Recommended"]
-
     context = {
         "user": User.objects.get(id=request.session["user_id"]),
-        "fixed_shelves": fixed_shelves,
         "editing": True,
         "edit_shelf_id": shelf_id
     }
@@ -157,8 +128,15 @@ def edit_shelf(request, shelf_id):
 
 
 def update_shelf(request, shelf_id):
+    errors = Shelf.objects.basic_validator(request.POST, request.session["user_id"])
+
+    if errors:
+        for k, v in errors.items():
+            messages.error(request, v)
+        return redirect(f"/shelves/{shelf_id}/edit")
+
     this_shelf = Shelf.objects.get(id=shelf_id)
-    this_shelf.name = request.POST["new_name"]
+    this_shelf.name = request.POST["name"]
     this_shelf.save()
 
     return redirect("/shelf")
@@ -171,23 +149,40 @@ def delete_shelf(request, shelf_id):
     return redirect("/shelf")
 
 
-
-
 def create_shelf(request):
-    user = User.objects.get(id=request.session['user_id'])
-    shelf = Shelf.objects.create(
+    errors = Shelf.objects.basic_validator(request.POST, request.session["user_id"])
+
+    if errors:
+        for k, v in errors.items():
+            messages.error(request, v)
+        return redirect(f"/users/{request.session['user_id']}/shelves")
+
+
+    Shelf.objects.create(
         name=request.POST['name'],
-        owner = user,
+        owner = User.objects.get(id=request.session['user_id']),
     )
-    return redirect(f'user_shelves')
+    return redirect(f"/users/{request.session['user_id']}/shelves")
 
 
 def add_to_shelf(request, book_id):
-    shelf_id = request.POST['shelf']
-    shelf = Shelf.objects.get(id=shelf_id)
-    shelf.books.add(Book.objects.get(id=book_id))
+    this_shelf = Shelf.objects.get(id=request.POST['shelf'])
+    this_shelf.books.add(Book.objects.get(id=book_id))
+    this_shelf.save()
+    if this_shelf.name == "Finished":
+        print("*"*80)
+        print("Finished a book, eh?")
 
-    return redirect(f'/shelves/{shelf_id}')
+    return redirect(f'/shelves/{this_shelf.id}')
+
+
+def remove_from_shelf(request, book_id, shelf_id):
+    this_book = Book.objects.get(id=book_id)
+    this_shelf = Shelf.objects.get(id=shelf_id)
+    this_shelf.books.remove(this_book)
+    this_shelf.save()
+
+    return redirect(f"/shelves/{shelf_id}")
 
 
 def shelf(request, shelf_id):
@@ -306,7 +301,7 @@ def show_user_search(request, first_name, last_name, username, email):
 
     if terms == {}:
         messages.error(request, "Please enter at least one search term!")
-        return render(request, "list_friend_search.html")
+        return redirect(f"/users/{request.session['user_id']}/friends")
 
     options = User.objects.all()
 

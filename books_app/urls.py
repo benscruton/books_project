@@ -9,6 +9,7 @@ urlpatterns = [
     path("books/search", views.search_book, name="search_book"),
 
     path("books/search/<str:title>/<str:first_name>/<str:last_name>/<str:isbn>", views.show_book_search),
+    path("books/search/<str:title>/<str:first_name>/<str:last_name>/<int:isbn>", views.show_book_search),
     
     path("books/create", views.create_book, name="create_book"),
     
@@ -50,6 +51,8 @@ urlpatterns = [
     path("shelves/create", views.create_shelf),
     
     path('book/<int:book_id>/shelf/add', views.add_to_shelf, name="add_to_shelf"),
+
+    path("book/<int:book_id>/shelves/<int:shelf_id>/remove", views.remove_from_shelf),
     
     path('shelf/<int:shelf_id>', views.shelf, name="shelf_id"),
 

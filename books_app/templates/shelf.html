@@ -18,8 +18,14 @@
             <div class="card">
                 <div class="card-content">
                     <span class="card-title"><a href="{% url 'book_detail' book.id %}">{{ book.title }}</a></span>
+                    <p>By {{book.author_firstname}} {{book.author_lastname}}</p>
                     <p>Description: {{ book.description }}</p>
                     <p>Added On: {{ book.created_at }}</p>
+                    <form action="/book/{{book.id}}/shelves/{{shelf.id}}/remove">
+                        <button class="btn">
+                            Remove from shelf
+                        </button>
+                    </form>
                 </div>
             </div>
         {% endfor %}

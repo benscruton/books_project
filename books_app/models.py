@@ -14,6 +14,18 @@ class Book(models.Model):
     updated_at = models.DateTimeField(auto_now = True)
 
 
+class ShelfManager(models.Manager):
+    def basic_validator(self, post_data, user_id):
+        errors = {}
+        this_user = User.objects.get(id=user_id)
+
+        if len(post_data["name"]) < 1:
+            errors["name"] = "Your shelf needs to have a name!"
+        if len(this_user.shelves.filter(name = post_data["name"])) > 0:
+            errors["name"] = "You already have a shelf with this name!"
+        
+        return errors
+
 class Shelf(models.Model):
     name = models.CharField(max_length = 255)
     books = models.ManyToManyField(Book, related_name = "shelves")
@@ -21,6 +33,7 @@ class Shelf(models.Model):
     fixed = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now = True)
+    objects = ShelfManager()
 
 
 class Parent(models.Model):

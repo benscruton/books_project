@@ -20,9 +20,9 @@
         <li><a href="/users/{{user.id}}">{{user.first_name}} {{user.last_name}}</a></li>
     {% endfor %}
     </ul>
-    {% else %}
-        <p>No matches found!</p>
-    {% endif %}
+{% else %}
+    <p>No matches found!</p>
+{% endif %}
 
 
 
