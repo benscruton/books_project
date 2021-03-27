@@ -20,22 +20,26 @@ header{
     flex-wrap: wrap
 }
 
-    header h1{
+    header h1, h3{
         width: 100%;
         text-align: center;
     }
+
+    header h3{
+        padding-bottom: 10px;
+    }
+
+
 
 .error_list{
     padding-bottom: 15px;
 }
 
 .error_msg{
-    color: #b00;
     font-weight: bold;
 }
 
 .success_msg{
-    color: forestgreen;
     font-weight: bold;
 }
 

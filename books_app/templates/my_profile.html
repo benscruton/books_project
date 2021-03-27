@@ -69,7 +69,11 @@
             <h4>Your Friends:</h4>
 
             {% if user.friends.count == 0 %}
-            <li>You don't have any friends :(</li>
+            <div class="card indigo lighten-4">
+                <div class="card-content">
+                    <p>You don't have any friends :(</p>
+                </div>
+            </div>
             
             {% else %}
                 {% for friend in user.friends.all %}

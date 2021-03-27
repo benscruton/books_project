@@ -56,10 +56,15 @@ def create_book(request):
 
 
 def book_detail(request, book_id):
+    if "user_id" in request.session:
+        this_user = User.objects.get(id=request.session["user_id"])
+    else:
+        this_user = None
+
     context = {
         'book': Book.objects.get(id=book_id),
-        "user": User.objects.get(id=request.session['user_id']),
-        "shelves": Shelf.objects.filter(owner=User.objects.get(id=request.session['user_id'])),
+        "user": this_user,
+        "shelves": Shelf.objects.filter(owner=this_user),
         "new_requests": check_friend_requests(request.session),
     }
     return render(request, "book_detail.html", context)

@@ -9,10 +9,12 @@
         <p>description: {{book.description}}</p>
         <p>ISBN: {{book.ISBN}}</p>
     </section>
-
+    
+    {% if user != None %}
+    <hr>
     <section id="Action_box">
-        <h5>Actions:</h5>
-        <h4>Add to Shelf </h4>
+        <h4>Actions:</h4>
+        <h5>Add to Shelf </h5>
         <form action="{% url 'add_to_shelf' book.id %}" method="POST">
         {% csrf_token %}
             <div>
@@ -27,7 +29,7 @@
         </form>
 
 
-        <h4>Recommend to a Friend:</h4>
+        <h5>Recommend to a Friend:</h5>
         <form action="/books/{{book.id}}/recommend" method="POST">
         {% csrf_token %}
             <select name="friend_id" id="friend_id">
@@ -43,7 +45,7 @@
 
 
     </section>
-
+    {% endif %}
 
 
 
