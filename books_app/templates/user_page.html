@@ -2,44 +2,152 @@
 {% block content %}
 
 
-
-    <h3 class="center-align">{{user.first_name}} {{user.last_name}}'s Profile</h3>
+    <h3 class="center-align">
+        {% if user.id == request.session.user_id %}Your{% else %}{{user.first_name}} {{user.last_name}}'s{% endif %} Profile
+    </h3>
 
     
         
 
 
-        <div class="row">
+    <div class="row">
             
-        {% if user in logged_in_user.friends.all %}
+        
 
-            <aside class="col s3 green lighten-3" id="shelves">
-                <h4>{{user.first_name}}'s Shelves:</h4>
-                <ul id="shelflist">
+        <aside class="col l3 m6 s12 row" id="shelves">
+            <div class="col s10 offset-s1 card green lighten-3">
+                <p class="card-title center-align">
+                    <a href="/users/{{user.id}}/shelves">
+                        {% if user.id != request.session.user_id %}{{user.first_name}}'s {% endif %}Shelves:
+                    </a>
+                </p>
+
+                {% if user in logged_in_user.friends.all or user.id == request.session.user_id %}
+
+                <ul id="shelflist" class="collection">
                 {% for shelf in user.shelves.all %}
-                    <div class="card green lighten-4">
-                        <div class="card-content">
-                            <p><a href="/shelves/{{shelf.id}}">{{shelf.name}}</a></p>
-                        </div>
-                    </div>
+                    <li class="collection-item green lighten-4">
+                        <a href="/shelves/{{shelf.id}}">{{shelf.name}}</a>
+                    </li>
                 {% endfor %}
-            </aside>
-        {% endif %}
+                </ul>
+                {% endif %}
+            </div>
+        </aside>
+        
+
+
+
+
+
+
+        
+        <aside class="col l3 push-l6 m6 s12 row" id="friends">
+        
+
+            <div class="col s10 offset-s1 indigo lighten-3 card">
+                {% if user in logged_in_user.friends.all or user.id == request.session.user_id %}
+                    <p class="card-title center-align">{% if user.id != request.session.user_id %}{{user.first_name}}'s{% endif %} Friends:</p>
+                {% else %}
+                    <p class="card-title center-align">Mutual Friends </h2>
+                {% endif %}
+
+
+
+
+                {% if user in logged_in_user.friends.all %}
+                    <p class="center-align">You are friends!</p>
+                    <form action="/users/{{user.id}}/remove_friend" class="center">
+                        <button class="btn red darken-3">Unfriend</button>
+                    </form>
+
+                {% else %}
+                    {% if user in logged_in_user.added_friends.all %}
+                        <p>Added!  Awaiting response</p>
+                    {% elif user in logged_in_user.added_by.all %}
+                        <p>Respond to {{user.first_name}}'s friend request:</p>
+                        <div class="center">
+                            <form style="display: inline;" action="/users/{{user.id}}/accept_friend">
+                                <button class="btn">Accept</button>
+                            </form>
+                            <form style="display: inline;" action="/users/{{user.id}}/ignore_friend">
+                                <button class="btn red darken-3">Ignore</button>
+                            </form>
+                        </div>
+
+                    {% else %}
+                        <form action="/users/{{user.id}}/add_friend" class="center">
+                            <button class="btn purple darken-1 waves-effect waves-light">
+                                Add {{user.first_name}} to friends
+                            </button>
+                        </form>
+                    {% endif %}
+                {% endif %}
+
+
+
+
+                {% if user in logged_in_user.friends.all %}
+
+                    <ul id="friendlist" class="collection">
+                        {% if user.friends.count == 0 %}
+                        <li class="collection-item indigo lighten-4">
+                            You don't have any friends :(
+                        </li>
+                        
+                        {% else %}
+                            {% for friend in user.friends.all %}
+
+                            <li class="collection-item indigo lighten-4">
+                                <a href="/users/{{friend.id}}">{{friend.first_name}} {{friend.last_name}}</a>
+                            </li>
+
+                            {% endfor %}
+                        {% endif %}
+                    </ul>
+
+                {% else %}
+                    <ul id="friendlist" class="collection">
+                        {% if mutual_friends.count == 0 %}
+                            <li class="collection-item  indigo lighten-4">You have no mutual friends</li>
+                        
+                        {% else %}
+                            {% for friend in mutual_friends %}
+                                
+                            <li class="collection-item indigo lighten-4">
+                                <a href="/users/{{friend.id}}">{{friend.first_name}} {{friend.last_name}}</a>
+                            </li>
+
+                            {% endfor %}
+                        {% endif %}
+                        
+                    </ul>
+                {% endif %}
+            </div>
+        </aside>
+
+
+
+
+
+
             
 
 
 
-        <section class="col s6{% if user not in logged_in_user.friends.all %} offset-s3{% endif %}">
+        <section class="col l6 pull-l3 m10 offset-m1 s12">
 
-        {% if user in logged_in_user.friends.all %}
-            <h4 class="center-align">{{user.first_name}}'s Wall</h4>
+        {% if user in logged_in_user.friends.all or user.id == request.session.user_id %}
+            <h4 class="center-align">{% if user.id != request.session.user_id %}{{user.first_name}}'s {% endif %}Wall</h4>
 
             <div class="card">
                 <form method="POST" action="/users/{{user.id}}/add_wallpost" class="card-content">
                 {% csrf_token %}
-                    <p><label for="add_post">Write on {% if user.id == request.session.user_id %}your{% else %}{{user.first_name}}'s{% endif%} wall:</label></p>
-                    <textarea class="wallpost" rows=6 cols=40 name="add_post" id="add_post"></textarea>
-                    <input type="submit" value="Post to wall">
+                    <div class="input-field">
+                        <label for="add_post">Write on {% if user.id == request.session.user_id %}your{% else %}{{user.first_name}}'s{% endif%} wall:</label>
+                        <textarea class="wallpost materialize-textarea" name="add_post" id="add_post"></textarea>
+                    </div>
+                    <button type="submit" class="btn purple darken-1 waves-effect waves-light">Post to wall</button>
                 </form>
             </div>
             
@@ -53,28 +161,32 @@
                         <p><a href="/posts/{{post.id}}/delete">&nbsp; &nbsp; &nbsp; &nbsp;Delete this post</a></p>
                     {% endif %}
 
-
+                    <ul class="collection">
                     {% for comment in post.comments.all %}
-                    <div class="card">
-                        <div class="card-content">
+
+                        <li class="collection-item">
+
                             <h5><a href="/users/{{comment.commenter.id}}">{{comment.commenter.first_name}} {{comment.commenter.last_name}}</a>, at {{comment.created_at}}</h5>
                             <p class="comment">&nbsp; &nbsp; &nbsp; &nbsp;{{comment.contents}}</p>
 
                             {% if comment.commenter.id == request.session.user_id %}
                                 <p><a href="/comments/{{comment.id}}/delete">&nbsp; &nbsp; &nbsp; &nbsp;Delete this comment</a></p>
                             {% endif %}
-                        </div>
-                    </div>
+
+                        </li>
+
                     {% endfor %}
 
-                    <div class="card">
-                        <form method="POST" action="/posts/{{post.id}}/add_comment" class="card-content">
-                        {% csrf_token %}
-                            <p><label for="comment">Write a comment:</label></p>
-                            <textarea class="comment" rows=4 cols=30 name="comment" id="comment"></textarea>
-                            <input type="submit" value="Comment">
-                        </form>
-                    </div>
+                    
+                    <form method="POST" action="/posts/{{post.id}}/add_comment" class="collection-item">
+                    {% csrf_token %}
+                        <div class="input-field row">
+                            <label for="comment">Write a comment:</label>
+                            <textarea class="materialize-textarea col s8" name="comment" id="comment"></textarea>
+                        </div>
+                        <button type="submit" class="btn purple darken-1 waves-effect waves-light">Comment</button>
+                    </form>
+                    
                 </div>
             </div>
             {% endfor %}
@@ -82,100 +194,13 @@
 
 
         {% else %}
-            <p> Add this user as a friend to see more about them!</p>
+            <p class="center-align">Add this user as a friend to see more about them!</p>
 
         {% endif %}
         </section>
 
-        <aside class="col s3 indigo lighten-3" id="friends">
 
-
-
-            {% if user in logged_in_user.friends.all %}
-                <p>You are friends!</p>
-                <form action="/users/{{user.id}}/remove_friend">
-                    <button class="btn red darken-3">Unfriend</button>
-                </form>
-
-            {% else %}
-                {% if user in logged_in_user.added_friends.all %}
-                    <p>Added!  Awaiting response</p>
-                {% elif user in logged_in_user.added_by.all %}
-                    <p>Respond to {{user.first_name}}'s friend request:</p>
-                    <div>
-                        <form style="display: inline;" action="/users/{{user.id}}/accept_friend">
-                            <button class="btn">Accept</button>
-                        </form>
-                        <form style="display: inline;" action="/users/{{user.id}}/ignore_friend">
-                            <button class="btn red darken-3">Ignore</button>
-                        </form>
-                    </div>
-
-                {% else %}
-                    <form action="/users/{{user.id}}/add_friend">
-                        <button class="btn">
-                            Add {{user.first_name}} to friends
-                        </button>
-                    </form>
-                {% endif %}
-            {% endif %}
-
-
-
-
-
-
-            {% if user in logged_in_user.friends.all %}
-
-                <h4>{{user.first_name}}'s Friends:</h4>
-
-
-                <ul id="friendlist">
-                    {% if user.friends.count == 0 %}
-                    <div class="card indigo lighten-4">
-                        <div class="card-content">
-                            <p>You don't have any friends :(</p>
-                        </div>
-                    </div>
-                    
-                    {% else %}
-                        {% for friend in user.friends.all %}
-
-                        <div class="card indigo lighten-4">
-                            <div class="card-content">
-                                <p><a href="/users/{{friend.id}}">{{friend.first_name}} {{friend.last_name}}</a></p>
-                            </div>
-                        </div>
-
-                        {% endfor %}
-                    {% endif %}
-                </ul>
-
-            {% else %}
-                <h2>Mutual Friends </h2>
-
-                <ul id="friendlist">
-                    {% if mutual_friends.count == 0 %}
-                        <li>You have no mutual friends</li>
-                    
-                    {% else %}
-                        {% for friend in mutual_friends %}
-                            
-                        <div class="card indigo lighten-4">
-                            <div class="card-content">
-                                <p><a href="/users/{{friend.id}}">{{friend.first_name}} {{friend.last_name}}</a></p>
-                            </div>
-                        </div>
-
-                        {% endfor %}
-                    {% endif %}
-                    
-                </ul>
-            {% endif %}
-            </aside>
-
-
-        </div>
+    </div>
 
 
 

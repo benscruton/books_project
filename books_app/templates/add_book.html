@@ -2,16 +2,37 @@
 {% block content %}
 <div class="container">
 
-    <h1>Add a New Book</h1>
+    <h3 class="center-align">Add a New Book</h3>
     <form action="/books/create" method="post">
-        {% csrf_token %}
-        Title <input type="text" name="title"><br>
-        Author First Name <input type="text" name="author_firstname"><br>
-        Author Last Name <input type="text" name="author_lastname"><br>
-        Description <input type="text" name="description"><br>
-        Year <input type="text" name="year"><br>
-        ISBN <input type="text" Name="ISBN"><br>
-        <input type="submit" class="btn">    
+    {% csrf_token %}
+        <div class="input-field">
+            <label for="title">Title</label>
+            <input type="text" name="title" id="title" />
+        </div>
+        <div class="input-field">
+            <label for="author_firstname">Author First Name</label>
+            <input type="text" name="author_firstname" id="author_firstname" />
+        </div>
+        <div class="input-field">
+            <label for="author_lastname">Author Last Name</label>
+            <input type="text" name="author_lastname" id="author_lastname" />
+        </div>
+        <div class="input-field">
+            <label for="description">Description</label>
+            <input type="text" name="description" id="description">
+        </div>
+        <div class="input-field">
+            <label for="year">Year</label>
+            <input type="text" name="year" id="year" />
+        </div>
+        <div class="input-field">
+            <label for="ISBN">ISBN</label>
+            <input type="text" Name="ISBN" id="ISBN" />
+        </div>
+        <button type="submit" class="btn purple darken-1 waves-effect waves-light">
+            Add Book
+            <i class="material-icons right">send</i>
+        </button>
     </form>
 
 </div>

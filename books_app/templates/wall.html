@@ -19,9 +19,11 @@
         <div class="card">
             <form method="POST" action="/users/{{user.id}}/add_wallpost" class="card-content">
                 {% csrf_token %}
-                <p><label for="add_post">Write on {% if user.id == request.session.user_id %}your{% else %}{{user.first_name}}'s{% endif%} wall:</label></p>
-                <textarea class="wallpost" rows=6 cols=40 name="add_post" id="add_post"></textarea>
-                <input class="btn" type="submit" value="Post to wall">
+                <div class="input-field">
+                    <label for="add_post">Write on {% if user.id == request.session.user_id %}your{% else %}{{user.first_name}}'s{% endif%} wall:</label>
+                    <textarea class="wallpost materialize-textarea" name="add_post" id="add_post"></textarea>
+                </div>
+                <button type="submit" class="btn purple darken-1 waves-effect waves-light">Post to wall</button>
             </form>
         </div>
         
@@ -33,34 +35,35 @@
                 
                 {% if post.poster.id == request.session.user_id or post.wall.id == request.session.user_id %}
                     <p style="margin-left: 25px;">
-                        <a href="/posts/{{post.id}}/delete">Delete this post</a>
+                        <a href="/posts/{{post.id}}/delete" class="red-text text-darken-2">Delete this post</a>
                     </p>
                 {% endif %}
 
-
-                {% for comment in post.comments.all %}
-                <div class="card">
-                    <div class="card-content">
+                <ul class="collection">
+                    {% for comment in post.comments.all %}
+                    <li class="collection-item">
                         <h5><a href="/users/{{comment.commenter.id}}">{{comment.commenter.first_name}} {{comment.commenter.last_name}}</a>, at {{comment.created_at}}</h5>
                         <p class="comment" style="margin-left: 25px;">{{comment.contents}}</p>
 
                         {% if comment.commenter.id == request.session.user_id or post.wall.id == request.session.user_id %}
                             <p style="margin-left: 25px;">
-                                <a href="/comments/{{comment.id}}/delete">Delete this comment</a>
+                                <a href="/comments/{{comment.id}}/delete" class="red-text text-darken-2">Delete this comment</a>
                             </p>
                         {% endif %}
-                    </div>
-                </div>
-                {% endfor %}
+                    </li>
+                    {% endfor %}
 
-                <div class="card">
-                    <form method="POST" action="/posts/{{post.id}}/add_comment" class="card-content">
+                    
+                    <form method="POST" action="/posts/{{post.id}}/add_comment" class="collection-item">
                     {% csrf_token %}
-                        <p><label for="comment">Write a comment:</label></p>
-                        <textarea class="comment" rows=4 cols=30 name="comment" id="comment"></textarea>
-                        <input type="submit" class="btn" value="Comment">
+                        <div class="input-field row">
+                            <label for="comment">Write a comment:</label>
+                            <textarea class="materialize-textarea col s8" name="comment" id="comment"></textarea>
+                        </div>
+                        <button type="submit" class="btn purple darken-1 waves-effect waves-light">Comment</button>
                     </form>
-                </div>
+                </ul>
+                
             </div>
         </div>
         {% endfor %}
@@ -70,7 +73,7 @@
         </form>
 
     {% else %}
-        <p> Add this user as a friend to see their wall!</p>
+        <p class="center-align"><a href="/users/{{user.id}}">Add this user as a friend</a> to see their wall!</p>
 
     {% endif %}
 </div>

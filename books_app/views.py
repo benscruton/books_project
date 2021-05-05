@@ -259,8 +259,8 @@ def view_user(request, user_id):
         "new_requests": check_friend_requests(request.session),
     }
 
-    if user_id == request.session["user_id"]:
-        return render(request, "my_profile.html", context)
+    # if user_id == request.session["user_id"]:
+    #     return render(request, "my_profile.html", context)
 
     context["logged_in_user"] = logged_in_user
     context["mutual_friends"] = User.objects.filter(friends__in=[this_user]).filter(friends__in=[logged_in_user])

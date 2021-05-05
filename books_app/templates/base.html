@@ -9,7 +9,9 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Book Project</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    {% comment %}
     <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+    {% endcomment %}
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
@@ -22,26 +24,31 @@
                 <ul>
                     {% if request.session.user_id %}
                         <li><a href="/" class="left brand-logo">&nbsp;&nbsp;Welcome, {{request.session.first_name }} {{ request.session.last_name }}!</a></li>
-                    {% else %}
-                        <li><a href="/login" class="left brand-logo">&nbsp;&nbsp;Log In or Register</a></li>
+{% comment %}                    {% else %}
+                        <li><a href="/login" class="left brand-logo">&nbsp;&nbsp;Log In or Register</a></li> 
+{% endcomment %}
                     {% endif %}
-                    </ul>
-                    <ul class="right">
-                    {% if request.session.user_id %}
-                        <li><a href="{% url 'dashboard' %}">Books Dashboard</a></li>
-                        <li><a href="/users/{{request.session.user_id}}/shelves">Shelves</a></li>
-                        <li><a href="/users/{{request.session.user_id}}">Profile</a></li>
-                        <li><a href="/users/{{request.session.user_id}}/wall">Wall</a></li>
-                        <li><a href="/users/{{request.session.user_id}}/friends">Friends</a></li>
-                        <li><a href="/login/users/logout">Log out</a></li>
-                    </ul>
-                    {% endif %}
+            </ul>
+                <ul class="right">
+                {% if request.session.user_id %}
+                    <li><a href="{% url 'dashboard' %}">Books Dashboard</a></li>
+                    <li><a href="/users/{{request.session.user_id}}/shelves">Shelves</a></li>
+                    <li><a href="/users/{{request.session.user_id}}">Profile</a></li>
+                    <li><a href="/users/{{request.session.user_id}}/wall">Wall</a></li>
+                    <li><a href="/users/{{request.session.user_id}}/friends">Friends</a></li>
+                    <li><a href="/login/users/logout">Log out</a></li>
+                    
+                {% else %}
+                    <li><a href="{% url 'dashboard' %}">Books Dashboard</a></li>
+                    <li><a href="/login">Log In or Register</a></li>
+                {% endif %}
+                
                 </ul>
             </div>
         </nav>
     </header>
-    <main>
 
+    <main>
         
         {% if new_requests %}
             {% for potential_friend in new_requests %}

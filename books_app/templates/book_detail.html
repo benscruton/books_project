@@ -1,49 +1,53 @@
 {% extends "base.html" %}
 {% block content %}
-<div class="container">
+<div class="row">
 
+    {% if user == None %}
+    <section id="detail_box" class="card col s10 offset-s1 m8 offset-m2 l6 offset-l3">
+    {% else %}
+    <section id="detail_box" class="card col s10 offset-s1 m8 offset-m2 l6 offset-l1">
+    {% endif %}
 
-    <section id="detail_box">
-        <h1>{{book.title}}</h1>
-        <p> Author: {{ book.author_firstname}} {{ book.author_lastname}} </p>
-        <p>description: {{book.description}}</p>
-        <p>ISBN: {{book.ISBN}}</p>
+        <div class="card-content">
+            <h1>{{book.title}}</h1>
+            <p> Author: {{ book.author_firstname}} {{ book.author_lastname}} </p>
+            <p>Description: {{book.description}}</p>
+            <p>ISBN: {{book.ISBN}}</p>
+        </div>
     </section>
     
     {% if user != None %}
-    <hr>
-    <section id="Action_box">
-        <h4>Actions:</h4>
-        <h5>Add to Shelf </h5>
-        <form action="{% url 'add_to_shelf' book.id %}" method="POST">
-        {% csrf_token %}
-            <div>
-                <select name="shelf">
-                    <option selected hidden disabled>Select a shelf...</option>
-                    {% for shelf in shelves.all %}
-                        <option value="{{shelf.id}}">{{shelf.name}}</option>
+    <section id="Action_box" class="card col s10 offset-s1 m8 offset-m2 l3 offset-l1">
+        <div class="card-content">
+            <p class="card-title">Add to Shelf </p>
+            <form action="{% url 'add_to_shelf' book.id %}" method="POST">
+            {% csrf_token %}
+                <div>
+                    <select name="shelf">
+                        <option selected hidden disabled>Select a shelf...</option>
+                        {% for shelf in shelves.all %}
+                            <option value="{{shelf.id}}">{{shelf.name}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <input type="submit" class="btn" value="Add"><br>
+            </form>
+            <br>
+
+
+            <p class="card-title">Recommend to a Friend:</p>
+            <form action="/books/{{book.id}}/recommend" method="POST">
+            {% csrf_token %}
+                <select name="friend_id" id="friend_id">
+                    <option selected hidden disabled>Select a friend...</option>
+                    {% for friend in user.friends.all %}
+                        <option value="{{friend.id}}">{{friend.first_name}} {{friend.last_name}}</option>
                     {% endfor %}
                 </select>
-            </div>
-            <input type="submit" class="btn" value="Add"><br>
-        </form>
-
-
-        <h5>Recommend to a Friend:</h5>
-        <form action="/books/{{book.id}}/recommend" method="POST">
-        {% csrf_token %}
-            <select name="friend_id" id="friend_id">
-                <option selected hidden disabled>Select a friend...</option>
-                {% for friend in user.friends.all %}
-                    <option value="{{friend.id}}">{{friend.first_name}} {{friend.last_name}}</option>
-                {% endfor %}
-            </select>
-            <input type="submit" class="btn" value="Recommend">
-        </form>
-        <br>
-
-
-
+                <input type="submit" class="btn" value="Recommend">
+            </form>
+            <br>
+        </div>
     </section>
     {% endif %}
 

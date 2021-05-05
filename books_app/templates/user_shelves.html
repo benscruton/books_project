@@ -13,7 +13,7 @@
         {% endfor %}
     {% endif %}
 
-    <table class="highlight">
+    <table class="highlight card">
         <thead>
             <th>Name</th>
             <th>Last Book</th>
@@ -23,50 +23,77 @@
         <tbody>
             <tr>
                 {% for shelf in user.shelves.all %}
-                <td>
+
                     {% if editing and edit_shelf_id == shelf.id %}
+
                     <form method="POST" action="/shelves/{{shelf.id}}/update">
                     {% csrf_token %}
-                        <input type="text" value="{{shelf.name}}" name="name">
-                        <input hidden type="submit">
+                        <td>
+                            <input type="text" value="{{shelf.name}}" name="name">
+                        </td>
+                        <td>
+                            <button type="submit" class="btn-small purple darken-1 waves-effect waves-light">
+                                <i class="material-icons">send</i>
+                            </button>
+                        </td>
                     </form>
 
                     {% else %}
-                    <a href="/shelves/{{shelf.id}}">{{ shelf.name }}</a>
+                        <td>
+                            <a href="/shelves/{{shelf.id}}">{{shelf.name}}</a>
+                        </td>
+                        <td>{{shelf.books.last.title}}</td>
                     {% endif %}
-                </td>
-                <td>{{ shelf.books.last.title }}</td>
                 <td>{{ shelf.created_at }}</td>
                 <td>
                 {% if not shelf.fixed %}
                     {% if editing and edit_shelf_id == shelf.id %}
-                    <a href="/users/{{request.session.user_id}}/shelves">Cancel</a>
+                    <a href="/users/{{request.session.user_id}}/shelves" class="btn-small yellow darken-2 waves-effect waves-light">
+                        <i class="material-icons">clear</i>
+                    </a>
 
                     {% else %}
-                    <a href="/shelves/{{shelf.id}}/edit">Edit</a>
+                    <a href="/shelves/{{shelf.id}}/edit" class="btn-small purple darken-1 waves-effect waves-light">
+                        <i class="material-icons">edit</i>
+                    </a>
                     {% endif %}
                     
-                    | <a href="/shelves/{{shelf.id}}/delete">Delete</a>
+                    <a href="/shelves/{{shelf.id}}/delete" class="btn-small red lighten-1 waves-effect waves-light">
+                        <i class="material-icons">delete</i>
+                    </a>
                 {% endif %}
 
                 </td>
             </tr>
         </body>
         {% endfor %}        
-    </table>
+    
 
     {% if not editing %}
-    <section>
+    <tr>
         <form action="/shelf/create" method="POST">
             {% csrf_token %}
-            <div class="input-field">
-                <input  type="text" placeholder="Add New Shelf Here..." name="name">
-                <button class="btn waves-effect waves-light" type="submit" name="action">Submit<i class="material-icons right">send</i></button>
-                {% comment %} <input type="submit" class="btn"></p> {% endcomment %}
-            </div>
+
+            <td>
+                <div class="input-field">
+                    <input  type="text" name="name" id="name">
+                    <label for="name">Add New Shelf</label>
+                </div>
+            </td>
+
+            <td>
+                <button class="btn-small purple darken-1 waves-effect waves-light" type="submit" name="action">
+                    <i class="material-icons">send</i>
+                </button>
+            </td>
+            <!-- </div> -->
+            <td></td>
+            <td></td>
         </form>
-    </section>
+        
+    </tr>
     {% endif %}
+    </table>
 
 
 

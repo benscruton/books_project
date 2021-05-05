@@ -2,35 +2,39 @@
 {% block content %}
 <div class="container">
 
+    <h3 class="center-align">Books Dashboard</h3>
+    
+    <section id="find_book" class="card">
+        
+        <form action="/books/search" method="POST" class="card-content">
+        {%csrf_token%}
+        
+        {% if messages %}
+            {% for message in messages %}
+                <p{% if message.tags %} class="{{message.tags}}"{% endif %}>{{message}}</p>
+            {% endfor %}
+        {% endif %}
 
-
-    <h1 class="center-align">Books Dashboard</h1>
-    <h4 class="center-align">Find A Book</h4>
-
-    {% if messages %}
-        {% for message in messages %}
-            <p{% if message.tags %} class="{{message.tags}}"{% endif %}>{{message}}</p>
-        {% endfor %}
-    {% endif %}
-
-    <section id="find_book">
-        <form action="/books/search" method="POST">
+            <p class="card-title center-align">Find A Book</p>
             <div id="row">
-                {%csrf_token%}
                 Title <input type="text" name="title" class="form-control"><br>
                 Author First Name <input type="text" name="author_firstname" class="form-control" ><br>
                 Author Last Name <input type="text" name="author_lastname" class="form-control"><br>
                 ISBN <input type="text" name="ISBN" class="form-control"><br>
-                <button type="submit" class="btn btn-primary">
+                <button type="submit" class="btn purple darken-1 waves-effect waves-light">
                     Find Book
                     <i class="material-icons right">search</i>
                 </button>
             </div>
         </form>
     </section>
+
     <p class="center-align">Can't find what you are looking for? </p>
     <div class="center-align">
-        <a href="/books/add" ><button class="btn btn-primary">Add Book</button></a>
+        <a href="/books/add" class="btn purple darken-1 waves-effect waves-light">
+            Add Book
+            <i class="material-icons right">add_circle_outline</i>
+        </a>
     </div>
 
 

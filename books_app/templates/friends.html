@@ -3,13 +3,13 @@
 
 <div class="container">
 
-    <h2 class="center-align">
+    <h3 class="center-align">
         {% if user.id == request.session.user_id %}
             Your
         {% else %}
             {{user.first_name}} {{user.last_name}}'s 
         {% endif %}
-    Friends</h2>
+    Friends</h3>
 
 
     {% if messages %}
@@ -36,7 +36,7 @@
 
                 <div><input type="email" placeholder="Email..." name="email"></div>
 
-                <button type="submit" class="btn waves-effect waves-light">
+                <button type="submit" class="btn purple darken-1 waves-effect waves-light">
                     Search
                     <i class="material-icons right">search</i>
                 </button>
