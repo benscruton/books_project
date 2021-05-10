@@ -17,21 +17,32 @@
         <aside class="col l3 m6 s12 row" id="shelves">
             <div class="col s10 offset-s1 card green lighten-3">
                 <p class="card-title center-align">
+                    {% if user in logged_in_user.friends or user.id == request.session.user_id %}
                     <a href="/users/{{user.id}}/shelves">
+                    {% endif %}
+
                         {% if user.id != request.session.user_id %}{{user.first_name}}'s {% endif %}Shelves:
+
+                    {% if user in logged_in_user.friends or user.id == request.session.user_id %}    
                     </a>
+                    {% endif %}
                 </p>
+
+                <ul id="shelflist" class="collection">
 
                 {% if user in logged_in_user.friends.all or user.id == request.session.user_id %}
 
-                <ul id="shelflist" class="collection">
-                {% for shelf in user.shelves.all %}
-                    <li class="collection-item green lighten-4">
-                        <a href="/shelves/{{shelf.id}}">{{shelf.name}}</a>
-                    </li>
-                {% endfor %}
-                </ul>
+                    {% for shelf in user.shelves.all %}
+                        <li class="collection-item green lighten-4">
+                            <a href="/shelves/{{shelf.id}}">{{shelf.name}}</a>
+                        </li>
+                    {% endfor %}
+
+                {% else %}
+                    <li class="collection-item green lighten-4">Message about not being friends</li>
+
                 {% endif %}
+                </ul>
             </div>
         </aside>
         
