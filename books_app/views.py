@@ -44,6 +44,12 @@ def add_book(request):
 
 
 def create_book(request):
+    errors = Book.objects.basic_validator(request.POST)
+    if errors:
+        print("Found an error")
+        for k, v in errors.items():
+            messages.error(request, v)
+        return redirect("/books/add")
     book = Book.objects.create(
         title = request.POST['title'],
         author_firstname = request.POST['author_firstname'],

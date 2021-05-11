@@ -3,37 +3,49 @@
 <div class="container">
 
     <h3 class="center-align">Add a New Book</h3>
-    <form action="/books/create" method="post">
-    {% csrf_token %}
-        <div class="input-field">
-            <label for="title">Title</label>
-            <input type="text" name="title" id="title" />
-        </div>
-        <div class="input-field">
-            <label for="author_firstname">Author First Name</label>
-            <input type="text" name="author_firstname" id="author_firstname" />
-        </div>
-        <div class="input-field">
-            <label for="author_lastname">Author Last Name</label>
-            <input type="text" name="author_lastname" id="author_lastname" />
-        </div>
-        <div class="input-field">
-            <label for="description">Description</label>
-            <input type="text" name="description" id="description">
-        </div>
-        <div class="input-field">
-            <label for="year">Year</label>
-            <input type="text" name="year" id="year" />
-        </div>
-        <div class="input-field">
-            <label for="ISBN">ISBN</label>
-            <input type="text" Name="ISBN" id="ISBN" />
-        </div>
-        <button type="submit" class="btn purple darken-1 waves-effect waves-light">
-            Add Book
-            <i class="material-icons right">send</i>
-        </button>
-    </form>
+
+    <div class="card">
+        <form action="/books/create" method="post" class="card-content">
+        {% csrf_token %}
+
+            {% if messages %}
+                {% for message in messages %}
+                    <p class="red-text text-darken-2">
+                        {{message}}
+                    </p>
+                {% endfor %}
+            {% endif %}
+
+            <div class="input-field">
+                <label for="title">Title</label>
+                <input type="text" name="title" id="title" />
+            </div>
+            <div class="input-field">
+                <label for="author_firstname">Author First Name</label>
+                <input type="text" name="author_firstname" id="author_firstname" />
+            </div>
+            <div class="input-field">
+                <label for="author_lastname">Author Last Name</label>
+                <input type="text" name="author_lastname" id="author_lastname" />
+            </div>
+            <div class="input-field">
+                <label for="description">Description</label>
+                <textarea type="text" name="description" id="description" class="materialize-textarea"></textarea>
+            </div>
+            <div class="input-field">
+                <label for="year">Year</label>
+                <input type="text" name="year" id="year" />
+            </div>
+            <div class="input-field">
+                <label for="ISBN">ISBN</label>
+                <input type="text" Name="ISBN" id="ISBN" />
+            </div>
+            <button type="submit" class="btn purple darken-1 waves-effect waves-light">
+                Add Book
+                <i class="material-icons right">send</i>
+            </button>
+        </form>
+    </div>
 
 </div>
 {% endblock %}

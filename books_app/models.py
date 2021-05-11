@@ -3,6 +3,21 @@ from login_app.models import User
 
 # Create your models here.
 
+class BookManager(models.Manager):
+    def basic_validator(self, post_data):
+        errors = {}
+
+        if len(post_data["title"]) < 1:
+            errors["title"] = "Each book must have a title."
+        if len(post_data["author_lastname"]) < 1:
+            errors["author_lastname"] = "Author's last name is required."
+        try:
+            int(post_data["year"])
+        except:
+            errors["year"] = "Please enter a valid year."
+
+        return errors
+
 class Book(models.Model):
     title = models.CharField(max_length = 255)
     year = models.IntegerField()
@@ -12,6 +27,7 @@ class Book(models.Model):
     ISBN = models.CharField(max_length = 255, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now = True)
+    objects = BookManager()
 
 
 class ShelfManager(models.Manager):
