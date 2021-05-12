@@ -23,31 +23,35 @@
 
 
     <div class="row">
+        <aside id="search_new" class="card col s3">
+            <div class="card-content">
+                <p class="card-title">Find Users By:</p>
+                <form method="POST" action="/users/search">
+                {% csrf_token %}
+                    <div><input type="text" placeholder="First Name..." name="first_name"></div>
 
-        <aside id="search_new" class="col s3">
-            <h4>Find Users By:</h4>
-            <form method="POST" action="/users/search">
-            {% csrf_token %}
-                <div><input type="text" placeholder="First Name..." name="first_name"></div>
+                    <div><input type="text" placeholder="Last Name..." name="last_name"></div>
 
-                <div><input type="text" placeholder="Last Name..." name="last_name"></div>
+                    <div><input type="text" placeholder="Username..." name="username"></div>
 
-                <div><input type="text" placeholder="Username..." name="username"></div>
+                    <div><input type="email" placeholder="Email..." name="email"></div>
 
-                <div><input type="email" placeholder="Email..." name="email"></div>
-
-                <button type="submit" class="btn purple darken-1 waves-effect waves-light">
-                    Search
-                    <i class="material-icons right">search</i>
-                </button>
-            </form>
-
+                    <button type="submit" class="btn purple darken-1 waves-effect waves-light">
+                        Search
+                        <i class="material-icons right">search</i>
+                    </button>
+                </form>
+            </div>
         </aside>
 
         <form class="col s9 pull-3" id="friend_search" method="POST" action="/users/{{user.id}}/friends/search">
         {% csrf_token %}
             <!-- <h4>Search Friends:</h4> -->
-            <input type="text"  name="friend_search" id="friend_search" placeholder = "Search friends...">
+            <div class="input-field purple-text text-darken-1">
+                <i class="material-icons prefix">search</i>
+                <input type="search" name="friend_search" id="friend_search" placeholder="Search your friends...">
+                <!-- <label for="friend_search">Search friends...</label> -->
+            </div>
         <input type="submit" hidden>
         </form>
 

@@ -9,21 +9,21 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Book Project</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
-    {% comment %}
-    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
-    {% endcomment %}
+    
+    <link rel="stylesheet" type="text/css" href="{% static 'style.css' %}">
+    
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
 </head>
 
-<body>
+<body class="grey lighten-2">
     <header class="navbar-fixed">
         <nav>
             <div class="nav-wrapper light-blue">
-                <ul>
+                <ul id="welcome-msg">
                     {% if request.session.user_id %}
-                        <li><a href="/" class="left brand-logo">&nbsp;&nbsp;Welcome, {{request.session.first_name }} {{ request.session.last_name }}!</a></li>
+                        <li><a href="/" class="left brand-logo">Welcome, {{request.session.first_name }} {{ request.session.last_name }}!</a></li>
                     {% endif %}
             </ul>
                 <ul class="right">
@@ -49,17 +49,19 @@
         
         {% if new_requests %}
             {% for potential_friend in new_requests %}
-                <div style="padding-left: 10px;">
+            <div class="row">
+                <div class="col s8 offset-s2 m5 offset-m1 l4 offset-l1 xl3 offset-xl1 card">
                     <p>You have a new friend request from <a href="/users/{{potential_friend.id}}">{{potential_friend.first_name}} {{potential_friend.last_name}}</a>!</p>
-                    <div>
-                        <form style="display: inline;" action="/users/{{potential_friend.id}}/accept_friend">
-                            <button class="btn">Accept</button>
+                    <div class="center">
+                        <form action="/users/{{potential_friend.id}}/accept_friend" class="inline">
+                            <button class="btn purple darken-1 waves-effect waves-light friend-req-btn">Accept</button>
                         </form>
-                        <form style="display: inline;" action="/users/{{potential_friend.id}}/ignore_friend">
-                            <button class="btn red darken-3">Ignore</button>
+                        <form action="/users/{{potential_friend.id}}/ignore_friend" class="inline">
+                            <button class="btn red darken-3 waves-effect waves-light friend-req-btn">Ignore</button>
                         </form>
                     </div>
                 </div>
+            </div>
 
             {% endfor %}
         {% endif %}
@@ -76,7 +78,7 @@
     <br>
     <br>
     <footer class="page-footer light-blue">
-        <div class="right">All Rights Reserved, &copy; 2021 Dojo Reads &nbsp;</div>
+        <div class="right">This page is not copyrighted alas</div>
     </footer>
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>

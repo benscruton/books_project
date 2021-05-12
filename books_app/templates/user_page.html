@@ -76,11 +76,11 @@
                         {% elif user in logged_in_user.added_by.all %}
                             <p>Respond to {{user.first_name}}'s friend request:</p>
                             <div class="center">
-                                <form style="display: inline;" action="/users/{{user.id}}/accept_friend">
-                                    <button class="btn">Accept</button>
+                                <form class="inline" action="/users/{{user.id}}/accept_friend">
+                                    <button class="btn purple darken-1 waves-effect waves-light friend-req-btn">Accept</button>
                                 </form>
-                                <form style="display: inline;" action="/users/{{user.id}}/ignore_friend">
-                                    <button class="btn red darken-3">Ignore</button>
+                                <form class="inline" action="/users/{{user.id}}/ignore_friend">
+                                    <button class="btn red darken-3 waves-effect waves-light friend-req-btn">Ignore</button>
                                 </form>
                             </div>
 

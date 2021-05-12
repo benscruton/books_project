@@ -42,7 +42,13 @@
         <p>No matches found!</p>
     {% endif %}
 
-
+    <form action="/">
+    {% csrf_token %}
+        <button type="submit" class="btn purple darken-1 waves-effect waves-light">
+            <i class="material-icons left">arrow_back</i>
+            Back to search
+        </button>
+    </form>
 
 
 

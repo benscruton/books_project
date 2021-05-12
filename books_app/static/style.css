@@ -1,0 +1,29 @@
+.error{
+    color: #b00;
+    font-weight: bold;
+}
+
+.success{
+    color: forestgreen;
+    font-weight: bold;
+}
+
+#friend_search::placeholder{
+    color: grey !important;
+}
+
+::placeholder {
+    opacity: 1;
+}
+
+#welcome-msg{
+    margin-left: 15px;
+}
+
+.inline{
+    display: inline;
+}
+
+.friend-req-btn{
+    margin: 0 5px 10px;
+}

@@ -10,14 +10,14 @@
     <ul class="center-align">
         {% for message in messages %}
         <li>
-        <li {% if message.tags == 'success'%}style="color: forestgreen; font-weight: bold;"{% else %}style="color: #b00; font-weight: bold"{% endif %}>{{message}}</li>
+        <li{% if message.tags %} class="{{message.tags}}"{% endif %}>{{message}}</li>
         {% endfor %}
     </ul>
     {% endif %}
 </div>
 
 <main class="row">
-    <div class="col l5 offset-l1 m6 s12">
+    <div class="col xl4 offset-xl2 l5 offset-l1 m6 s12">
         <div class="card col s10 offset-s1">
             <form method="POST" action="/login/users/register" class="card-content">
             {% csrf_token %}
@@ -50,7 +50,7 @@
     </div>
 
 
-    <div class="col l5 m6 s12">
+    <div class="col xl4 l5 m6 s12">
         <div class="card col s10 offset-s1">
             <form method="POST" action="/login/users/login" class="card-content">
             {% csrf_token %}
