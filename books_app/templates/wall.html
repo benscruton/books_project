@@ -23,7 +23,9 @@
                     <label for="add_post">Write on {% if user.id == request.session.user_id %}your{% else %}{{user.first_name}}'s{% endif%} wall:</label>
                     <textarea class="wallpost materialize-textarea" name="add_post" id="add_post"></textarea>
                 </div>
-                <button type="submit" class="btn purple darken-1 waves-effect waves-light">Post to wall</button>
+                <button type="submit" class="btn purple darken-1 waves-effect waves-light">
+                    Post to wall<i class="material-icons right">message</i>
+                </button>
             </form>
         </div>
         
@@ -60,7 +62,9 @@
                             <label for="comment">Write a comment:</label>
                             <textarea class="materialize-textarea col s8" name="comment" id="comment"></textarea>
                         </div>
-                        <button type="submit" class="btn purple darken-1 waves-effect waves-light">Comment</button>
+                        <button type="submit" class="btn purple darken-1 waves-effect waves-light">
+                            Comment<i class="material-icons right">comment</i>
+                        </button>
                     </form>
                 </ul>
                 

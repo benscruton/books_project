@@ -9,7 +9,8 @@
     {% if messages %}
     <ul class="center-align">
         {% for message in messages %}
-        <li style="color: #b00; font-weight: bold;">{{message}}</li>
+        <li>
+        <li {% if message.tags == 'success'%}style="color: forestgreen; font-weight: bold;"{% else %}style="color: #b00; font-weight: bold"{% endif %}>{{message}}</li>
         {% endfor %}
     </ul>
     {% endif %}
