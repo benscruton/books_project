@@ -71,9 +71,36 @@
                 </div>
             </form>
         </div>
+
+        
+
+        <div class="card col s10 offset-s1 red darken-3 white-text">
+            <div class="card-content row">
+                <p class="card-title center-align">DEMO USERS</p>
+                
+                <p class="center-align">For demonstrational purposes: Click either of the following buttons to log in with a demo user account to try out the site.</p>
+
+
+                <div class="col s12">
+                
+                    <form method="POST" action="/login/users/demo/1" class="left">
+                    {% csrf_token %}
+                        <button type="submit" class="btn black waves-effect waves-light">User 1</button>
+                    </form>
+                    <form method="POST" action="/login/users/demo/2" class="right">
+                    {% csrf_token %}
+                        <button type="submit" class="btn black waves-effect waves-light">User 2</button>
+                    </form>
+                </div>
+                
+            </div>
+        </div>
+
         <div class="center-align">
             <a href="/" class="btn purple darken-1 waves-effect waves-light">Continue as guest</a>
         </div>
+            
+
     </div>
 
 </main>

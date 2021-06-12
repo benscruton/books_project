@@ -95,3 +95,21 @@ def logout(request):
     del request.session["last_name"]
     del request.session["email"]
     return redirect("/login")
+
+# For demonstrational purposes: click a single button to log in as either of two already-created users
+def demo_login(request, demo_id):
+    if(demo_id == 1):
+        this_user = User.objects.get(email = "pol.treidum@death.star")
+        request.session["user_id"] = this_user.id
+        request.session["first_name"] = this_user.first_name
+        request.session["last_name"] = this_user.last_name
+        request.session["email"] = this_user.email
+    elif(demo_id == 2):
+        this_user = User.objects.get(email = "osleo.prennert@yavin.iv")
+        request.session["user_id"] = this_user.id
+        request.session["first_name"] = this_user.first_name
+        request.session["last_name"] = this_user.last_name
+        request.session["email"] = this_user.email
+    else:
+        return redirect("/login")
+    return redirect(f"/users/{request.session['user_id']}")
