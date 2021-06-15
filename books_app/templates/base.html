@@ -14,12 +14,7 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            var elems = document.querySelectorAll('.sidenav');
-            var instances = M.Sidenav.init(elems);
-        });
-    </script>
+    <script src="{% static 'script.js' %}"></script>
 </head>
 
 <body class="grey lighten-2">
@@ -31,9 +26,9 @@
                         <li><a href="/" class="left brand-logo">Welcome, {{request.session.first_name }} {{ request.session.last_name }}!</a></li>
                     {% endif %}
                 </ul>
-                <a href="#" data-target="mobile-demo" class="sidenav-trigger right">
-                    <i class="material-icons">menu</i>
-                </a>
+                <div data-target="mobile-demo" class="sidenav-trigger right hide-on-large-only">
+                    <i class="material-icons pointer" onclick="toggleMobileMenu()">menu</i>
+                </div>
                 <ul class="right hide-on-med-and-down">
                 {% if request.session.user_id %}
                     <li><a href="{% url 'dashboard' %}">Books Dashboard</a></li>
@@ -47,20 +42,25 @@
                     <li><a href="/login">Log In or Register</a></li>
                 {% endif %}
                 </ul>
-
-                {% comment %}
-                <!-- This is theoretically what should show up for the mobile menu -- just need to actually make it show up! -->
-                <ul class="sidenav" id="mobile-demo">
-                    <li><a href="sass.html">Sass</a></li>
-                    <li><a href="badges.html">Components</a></li>
-                    <li><a href="collapsible.html">Javascript</a></li>
-                    <li><a href="mobile.html">Mobile</a></li>
-                </ul>
-                {% endcomment %}
-
             </div>
         </nav>
     </header>
+
+    <!-- This is theoretically what should show up for the mobile menu -- just need to actually make it show up! -->
+    <ul class="mobilemenuhidden hide-on-large-only" id="mobilemenu">
+        {% if request.session.user_id %}
+            <li class="mobileouter">
+                <a class="mobilemenulink" href="{% url 'dashboard' %}">Books Dashboard</a></li>
+            <li class="mobileouter"><a href="/users/{{request.session.user_id}}/shelves">Shelves</a></li>
+            <li class="mobileouter"><a href="/users/{{request.session.user_id}}">Profile</a></li>
+            <li class="mobileouter"><a href="/users/{{request.session.user_id}}/wall">Wall</a></li>
+            <li class="mobileouter"><a href="/users/{{request.session.user_id}}/friends">Friends</a></li>
+            <li class="mobileouter"><a href="/login/users/logout">Log out</a></li>
+        {% else %}
+            <li class="mobileouter"><a href="{% url 'dashboard' %}">Books Dashboard</a></li>
+            <li class="mobileouter"><a href="/login">Log In or Register</a></li>
+        {% endif %}
+    </ul>
 
     <main>
         
