@@ -47,18 +47,18 @@
     </header>
 
     <!-- This is theoretically what should show up for the mobile menu -- just need to actually make it show up! -->
-    <ul class="mobilemenuhidden hide-on-large-only" id="mobilemenu">
+    <ul class="mobilemenuhidden hide-on-large-only light-blue" id="mobilemenu">
         {% if request.session.user_id %}
-            <li class="mobileouter">
+            <li class="mobileouter collection-item light-blue">
                 <a class="mobilemenulink" href="{% url 'dashboard' %}">Books Dashboard</a></li>
-            <li class="mobileouter"><a href="/users/{{request.session.user_id}}/shelves">Shelves</a></li>
-            <li class="mobileouter"><a href="/users/{{request.session.user_id}}">Profile</a></li>
-            <li class="mobileouter"><a href="/users/{{request.session.user_id}}/wall">Wall</a></li>
-            <li class="mobileouter"><a href="/users/{{request.session.user_id}}/friends">Friends</a></li>
-            <li class="mobileouter"><a href="/login/users/logout">Log out</a></li>
+            <li class="mobileouter collection-item light-blue"><a href="/users/{{request.session.user_id}}/shelves">Shelves</a></li>
+            <li class="mobileouter collection-item light-blue"><a href="/users/{{request.session.user_id}}">Profile</a></li>
+            <li class="mobileouter collection-item light-blue"><a href="/users/{{request.session.user_id}}/wall">Wall</a></li>
+            <li class="mobileouter collection-item light-blue"><a href="/users/{{request.session.user_id}}/friends">Friends</a></li>
+            <li class="mobileouter collection-item light-blue"><a href="/login/users/logout">Log out</a></li>
         {% else %}
-            <li class="mobileouter"><a href="{% url 'dashboard' %}">Books Dashboard</a></li>
-            <li class="mobileouter"><a href="/login">Log In or Register</a></li>
+            <li class="mobileouter collection-item light-blue"><a href="{% url 'dashboard' %}">Books Dashboard</a></li>
+            <li class="mobileouter collection-item light-blue"><a href="/login">Log In or Register</a></li>
         {% endif %}
     </ul>
 
